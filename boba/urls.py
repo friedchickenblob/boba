@@ -16,8 +16,14 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.views.generic import RedirectView
+
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
+    path("", RedirectView.as_view(pattern_name="food:index")),
     path("admin/", admin.site.urls),
+    path("food/", include("food.urls")),  # All requests sent to polls/ should be handled by polls/urls.py
 ]
