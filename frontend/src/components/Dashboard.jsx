@@ -1,4 +1,8 @@
-function Dashboard({ meals }) {
+import { useNavigate } from "react-router-dom";
+
+export default function Dashboard({ meals }) {
+  const navigate = useNavigate(); // MUST import and call useNavigate
+
   // Get today's date string
   const today = new Date().toISOString().split("T")[0]; // "2026-02-20"
 
