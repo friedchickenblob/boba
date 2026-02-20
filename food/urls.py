@@ -7,4 +7,5 @@ app_name = "food"
 # this routes traffic from polls/ to the index function that we defined earlier in the views file.
 urlpatterns = [
     path("", views.index, name="index"),
+    path("boba/", views.boba_demo, name="boba_demo"),
 ]
