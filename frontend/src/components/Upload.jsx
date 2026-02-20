@@ -17,14 +17,14 @@ function Upload({ onResult }) {
 
   async function handleSubmit() {
     if (!file) return;
-
     setLoading(true);
-    const data = await analyzeFood(file, portion);
+    
+    // Make sure both arguments are passed!
+    const data = await analyzeFood(file, portion); 
+    
     setLoading(false);
-
-    onResult(data); // send data up to App.jsx
+    onResult(data);
   }
-
   return (
     <div>
       <h2>Upload Food Image</h2>

@@ -6,6 +6,7 @@ from app.models import Base, FoodLog
 from app.database import engine, SessionLocal
 from datetime import datetime, date,  timedelta
 from sqlalchemy import func
+from fastapi import Form
 
 Base.metadata.create_all(bind=engine)
 
@@ -19,7 +20,10 @@ app.add_middleware(
 )
 
 @app.post("/analyze")
-async def analyze_food(file: UploadFile = File(...)):
+async def analyze_food(
+    file: UploadFile = File(...), 
+    portion: str = Form("medium")  # Add this to handle the extra data
+):
     result = await detect_food(file)
 
     main_food = result.get("main", "unknown")

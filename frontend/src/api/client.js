@@ -1,19 +1,22 @@
 export async function analyzeFood(file, portion) {
-    console.log("Analyzing file:", file);
+  const formData = new FormData();
+  
+  // These keys MUST match the variable names in your Python function exactly
+  formData.append("file", file);
+  formData.append("portion", portion); 
 
-    let multiplier = 1;
+  const response = await fetch("http://localhost:8000/analyze", {
+    method: "POST",
+    // IMPORTANT: Do NOT set "Content-Type" headers. 
+    // The browser will automatically set it to multipart/form-data with the correct boundary.
+    body: formData, 
+  });
 
-    if (portion === "small") multiplier = 0.75;
-    if (portion === "medium") multiplier = 1;
-    if (portion === "large") multiplier = 1.5;
+  if (!response.ok) {
+    const errorBody = await response.json();
+    console.error("Validation Error:", errorBody);
+    throw new Error("Check browser console for 422 details");
+  }
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    return {
-        food: "Grilled Chicken Breast",
-        calories: Math.round(165 * multiplier),
-        protein: Math.round(31 * multiplier),
-        carbs: Math.round(0 * multiplier),
-        fat: Math.round(3.6 * multiplier)
-    };
+  return await response.json();
 }

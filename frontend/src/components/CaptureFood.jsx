@@ -6,32 +6,23 @@ import AdviceBox from "./AdviceBox";
 function CaptureFood() {
   const [meals, setMeals] = useState([]);
 
-  const handleAddMeal = async (meal) => {
-    const formData = new FormData();
-    formData.append("file", meal.file); // meal.file is the uploaded image
+  const handleAddMeal = (data) => {
+  // Check if data and nutrition exist before using them
+  if (!data || !data.nutrition) {
+    console.error("Invalid data received from backend", data);
+    return;
+  }
 
-    try {
-      const res = await fetch("http://localhost:8000/analyze", {
-        method: "POST",
-        body: formData
-      });
+  const mealWithDate = {
+    food: data.food,
+    calories: data.nutrition.total.calories,
+    protein: data.nutrition.total.protein,
+    carbs: data.nutrition.total.carbs,
+    fat: data.nutrition.total.fat,
+    date: new Date().toISOString().split("T")[0]
+  };
 
-      const data = await res.json();
-
-      // The backend returns nutrition info
-      const mealWithDate = {
-        food: data.food,
-        calories: data.nutrition.total.calories,
-        protein: data.nutrition.total.protein,
-        carbs: data.nutrition.total.carbs,
-        fat: data.nutrition.total.fat,
-        date: new Date().toISOString().split("T")[0]
-      };
-
-      setMeals(prev => [...prev, mealWithDate]);
-    } catch (err) {
-      console.error("Error sending meal to backend:", err);
-    }
+  setMeals(prev => [...prev, mealWithDate]);
   };
 
   return (
