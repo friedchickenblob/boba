@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.vision import detect_food
 from app.nutrition import get_nutrition
@@ -16,14 +16,21 @@ from openai import OpenAI
 from app.auth.discord import router as discord_router
 
 
+from starlette.middleware.sessions import SessionMiddleware
+
+
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
 Base.metadata.create_all(bind=engine)
 
+
 app = FastAPI(title="Calorie AI Backend")
+
+app.add_middleware(SessionMiddleware, secret_key=os.environ["SESSION_SECRET"], same_site="lax")
 
 app.add_middleware(
     CORSMiddleware,
+    allow_credentials=True,
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,7 +45,8 @@ def list_users(db):
 @app.post("/analyze")
 async def analyze_food(
     file: UploadFile = File(...), 
-    portion: str = Form("medium")  # Add this to handle the extra data
+    portion: str = Form("medium"),  # Add this to handle the extra data
+    request: Request = None
 ):
     result = await detect_food(file)
 
@@ -52,7 +60,12 @@ async def analyze_food(
     if main_food != "unknown":
         db = SessionLocal()
         # user = db.query(User).filter(User.discord_id == "435939911455997952").first()
-        user = db.query(User).first()
+        user_id = request.session.get("user_id")
+        print("user id:", repr(user_id))
+        if user_id == None: return None
+        user = db.query(User).filter(User.discord_id == str(user_id)).first()
+        print("user", user)
+        if user == None: return None
 
 
         entry = FoodLog(
@@ -68,6 +81,13 @@ async def analyze_food(
         db.add(entry)
         db.commit()
         db.close()
+    print("gonna return", {
+        "food": main_food,
+        "components": components,
+        "portions": portions,
+        "nutrition": nutrition
+    }
+)
 
     return {
         "food": main_food,

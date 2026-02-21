@@ -1,6 +1,6 @@
 import os
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse
 from app.db import SessionLocal
 from app.models import User
@@ -30,7 +30,7 @@ async def discord_login():
 
 
 @router.get("/callback")
-async def discord_callback(code: str):
+async def discord_callback(code: str, request: Request):
     async with httpx.AsyncClient() as client:
         # exchange code for token
         token_res = await client.post(
@@ -74,5 +74,9 @@ async def discord_callback(code: str):
         db.commit()
         db.refresh(user)
 
+    print("this is discord id", discord_user["id"])
+    request.session["user_id"] = discord_user["id"]
     db.close()
-    return {"message": "User saved", "user": {"id": user.id, "username": user.username}}
+    # return {"message": "User saved", "user": {"id": user.id, "username": user.username}}
+    # frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")  # your React app
+    return RedirectResponse(url=f"http://localhost:5173/capture")
