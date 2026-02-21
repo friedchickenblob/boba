@@ -32,6 +32,5 @@ function AppWrapper() {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AppWrapper />
-    <Login />
   </BrowserRouter>
 );

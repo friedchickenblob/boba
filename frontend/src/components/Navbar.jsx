@@ -1,6 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import "../App.css"; // Make sure to import your CSS file!
 
+
+const login = () => {
+    window.location.href = "http://localhost:8000/auth/discord/login";
+};
+
 const Navbar = () => {
   const location = useLocation();
 
@@ -23,7 +28,7 @@ const Navbar = () => {
         <Link to="/manual" className={`nav-item ${location.pathname === '/manual' ? 'active' : ''}`}>
           Manual Entry
         </Link>
-        <button className="login-btn">Login</button>
+        <button onClick={login} className="login-btn">Login</button>
       </div>
     </nav>
   );

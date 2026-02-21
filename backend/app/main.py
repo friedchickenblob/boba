@@ -75,7 +75,7 @@ async def analyze_food(
             fat=nutrition["total"]["fat"],
             carbs=nutrition["total"]["carbs"],
             timestamp=datetime.utcnow(),
-            user_id=user.id   # associate with user
+            user_id=user.discord_id   # associate with user
         )
 
         db.add(entry)
