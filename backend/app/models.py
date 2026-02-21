@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, Float, String, DateTime
+from sqlalchemy import Column, Integer, Float, String, Boolean, String, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 from pydantic import BaseModel
@@ -17,6 +18,21 @@ class FoodLog(Base):
     fat = Column(Float)
     carbs = Column(Float)
 
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="food_logs")
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    discord_id = Column(String, unique=True, index=True)
+    username = Column(String)
+    email = Column(String, unique=True)
+    verified = Column(Boolean, default=False)
+    avatar = Column(String, nullable=True)
+
+    food_logs = relationship("FoodLog", back_populates="user")
 class ManualFoodEntry(BaseModel):
     food: str
     portion: str = "medium"

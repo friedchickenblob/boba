@@ -37,6 +37,7 @@ function SearchFood() {
       const res = await fetch("http://localhost:8000/log-manual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           food: dishName,
           calories: nutrition.calories,
@@ -58,7 +59,7 @@ function SearchFood() {
   return (
     <div className="search-container">
       <header className="search-header">
-        <h1>🔍 Manual Food Entry</h1>
+        <h1>Search Food Calories</h1>
         <p>Search for specific items and portion sizes to log your meals.</p>
       </header>
 

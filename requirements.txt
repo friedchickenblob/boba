@@ -7,4 +7,3 @@ openai
 pillow
 sqlalchemy
 pydantic
-aiosqlite

@@ -10,6 +10,7 @@ export async function analyzeFood(file, portion) {
     // IMPORTANT: Do NOT set "Content-Type" headers. 
     // The browser will automatically set it to multipart/form-data with the correct boundary.
     body: formData, 
+    credentials: "include" // <--- this is required
   });
 
   if (!response.ok) {

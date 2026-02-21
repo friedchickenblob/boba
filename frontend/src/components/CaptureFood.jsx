@@ -35,8 +35,9 @@ function CaptureFood() {
 
   return (
     <div className="capture-container">
+
       <header className="capture-header">
-        <h1>📸 Scan Your Meal</h1>
+        <h1>Scan Your Meal</h1>
         <p>Upload a photo and let our AI calculate the nutrition for you.</p>
       </header>
 
@@ -46,7 +47,7 @@ function CaptureFood() {
           <Upload onResult={handleAddMeal} />
         </div>
 
-        {/* Right Side: The Result Area (Shows only if meals exist) */}
+        {/* Right Side: The Result Area */}
         {meals.length > 0 && (
           <div className="capture-sidebar">
             <div className="capture-card totals-card">
@@ -58,7 +59,7 @@ function CaptureFood() {
                 <div className="stat-item"><strong>{totals.fat}g</strong><span>Fat</span></div>
               </div>
             </div>
-            
+
             <AdviceBox {...totals} />
           </div>
         )}
@@ -69,6 +70,7 @@ function CaptureFood() {
           <Results meals={meals} />
         </div>
       )}
+
     </div>
   );
 }
