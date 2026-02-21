@@ -11,6 +11,8 @@ import os
 from pydantic import BaseModel
 from openai import OpenAI
 
+from typing import Optional, Dict # for chatbot
+
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
@@ -174,3 +176,62 @@ def analyze_manual(entry: ManualFoodEntry):
             "carbs": carbs
         }
     }
+
+# Request body model
+class ChatRequest(BaseModel):
+    message: str
+    summary: Optional[Dict[str, float]] = None # calories, protein, carbs, fat
+
+
+class ChatResponse(BaseModel):
+    reply: str
+
+@app.post("/api/chat", response_model=ChatResponse)
+async def chat_endpoint(request: ChatRequest):
+    user_message = request.message
+    summary = request.summary or {}
+
+    system_prompt = "You are a helpful nutrition assistant."
+    if summary:
+        summary_text = ", ".join(f"{k}: {v}" for k, v in summary.items())
+        system_prompt += f" The user has eaten today: {summary_text}."
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message}
+            ],
+            temperature=0.7,
+            max_tokens=150
+        )
+
+        reply = response.choices[0].message.content.strip()
+        return {"reply": reply}
+
+    except Exception as e:
+        return {"reply": f"Sorry, something went wrong: {str(e)}"}
+
+# @app.post("/api/chat", response_model=ChatResponse)
+# async def chat_endpoint(request: ChatRequest):
+#     user_message = request.message
+
+#     try:
+#         response = client.chat.completions.create(
+#             model="gpt-4",
+#             messages=[
+#                 {"role": "system", "content": "You are a helpful nutrition assistant."},
+#                 {"role": "user", "content": user_message}
+#             ],
+#             temperature=0.7,
+#             max_tokens=150
+#         )
+
+#         # Access content using dot notation
+#         reply = response.choices[0].message.content.strip()
+
+#         return {"reply": reply}
+
+#     except Exception as e:
+#         return {"reply": f"Sorry, something went wrong: {str(e)}"}
