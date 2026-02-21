@@ -31,3 +31,5 @@ env/
 
 # dont add media images
 media/
+
+node_modules/

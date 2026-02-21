@@ -98,12 +98,31 @@ export default function Dashboard() {
     fetchGoals();
   }, []);
 
-  if (!summary) return (
+  const activeTotals = view === "daily" ? summary : weeklyData;
+
+  const activeGoals =
+  view === "daily"
+    ? goals
+    : {
+        calories: goals.calories * 7,
+        protein: goals.protein * 7,
+        carbs: goals.carbs * 7,
+        fat: goals.fat * 7,
+      };
+
+  if (!summary || (view === "weekly" && !weeklyData)) return (
     <div className="loader-container">
       <div className="spinner"></div>
       <p>Loading your dashboard...</p>
     </div>
   );
+  
+  // if (!summary) return (
+  //   <div className="loader-container">
+  //     <div className="spinner"></div>
+  //     <p>Loading your dashboard...</p>
+  //   </div>
+  // );
 
   return (
     <div className="dashboard-wrapper">
@@ -127,19 +146,52 @@ export default function Dashboard() {
       {!goalsLoaded ? (
         <p>Loading goals...</p>
       ) : goals ? (
-        <section className="progress-section">
-          <h2>Your Progress</h2>
-          <ProgressBar label="Calories" value={summary.calories} goal={goals.calories} unit="kcal" color="#16a34a" />
-          <ProgressBar label="Protein" value={summary.protein} goal={goals.protein} unit="g" color="#f97316" />
-          <ProgressBar label="Carbs" value={summary.carbs} goal={goals.carbs} unit="g" color="#3b82f6" />
-          <ProgressBar label="Fat" value={summary.fat} goal={goals.fat} unit="g" color="#ef4444" />
-          <button 
-            className="btn-secondary1"
-            onClick={() => navigate("/goals")}
-          >
-            Edit Goals
-          </button>
-        </section>
+
+          <section className="progress-section">
+            <h2>Your {view === "daily" ? "Daily" : "Weekly"} Progress</h2>
+
+            <ProgressBar
+              label="Calories"
+              value={activeTotals.calories}
+              goal={activeGoals.calories}
+              unit="kcal"
+              color="#16a34a"
+            />
+
+            <ProgressBar
+              label="Protein"
+              value={activeTotals.protein}
+              goal={activeGoals.protein}
+              unit="g"
+              color="#f97316"
+            />
+
+            <ProgressBar
+              label="Carbs"
+              value={activeTotals.carbs}
+              goal={activeGoals.carbs}
+              unit="g"
+              color="#3b82f6"
+            />
+
+            <ProgressBar
+              label="Fat"
+              value={activeTotals.fat}
+              goal={activeGoals.fat}
+              unit="g"
+              color="#ef4444"
+            />
+
+            <button
+              className="btn-secondary1"
+              onClick={() => navigate("/goals")}
+            >
+              Edit Goals
+            </button>
+          </section>
+
+
+
       ) : (
         <div className="no-goals-card">
           <h3>No Goals Set Yet</h3>
