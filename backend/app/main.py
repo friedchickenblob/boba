@@ -7,7 +7,13 @@ from app.database import engine, SessionLocal
 from datetime import datetime, date,  timedelta
 from sqlalchemy import func
 from fastapi import Form
+import os
+from pydantic import BaseModel
+from openai import OpenAI
 
+
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+client = OpenAI(api_key=OPENAI_API_KEY)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Calorie AI Backend")
@@ -106,5 +112,65 @@ def weekly_summary():
             "protein": round(result.protein or 0, 2),
             "fat": round(result.fat or 0, 2),
             "carbs": round(result.carbs or 0, 2),
+        }
+    }
+
+class ManualFoodEntry(BaseModel):
+    food: str
+    portion: str = "medium"
+
+@app.post("/analyze-manual")
+def analyze_manual(entry: ManualFoodEntry):
+    prompt = f"""
+    Provide nutrition info for '{entry.food}' with portion '{entry.portion}'.
+    Also, return the name of the food GPT thinks is correct as 'food'.
+    Respond as JSON ONLY with keys: food, calories, protein, fat, carbs.
+    All numeric values should be numbers.
+    """
+
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
+    )
+
+    # === DEBUG PRINT ===
+    print("RAW GPT RESPONSE:", response)
+    print("RAW CONTENT:", response.choices[0].message.content)
+
+    import json
+    try:
+        nutrition = json.loads(response.choices[0].message.content)
+        food_name = nutrition.get("food", entry.food)  # GPT corrected name
+        calories = float(nutrition.get("calories", 0))
+        protein  = float(nutrition.get("protein", 0))
+        fat      = float(nutrition.get("fat", 0))
+        carbs    = float(nutrition.get("carbs", 0))
+    except Exception:
+        # fallback if GPT response is invalid
+        food_name = entry.food
+        calories = protein = fat = carbs = 0
+
+    db = SessionLocal()
+    log = FoodLog(
+        food=food_name,   # store GPT-corrected name
+        calories=calories,
+        protein=protein,
+        fat=fat,
+        carbs=carbs,
+        timestamp=datetime.utcnow()
+    )
+    db.add(log)
+    db.commit()
+    db.close()
+
+    return {
+        "food": food_name,       # return GPT-corrected name
+        "portion": entry.portion,
+        "nutrition": {
+            "calories": calories,
+            "protein": protein,
+            "fat": fat,
+            "carbs": carbs
         }
     }

@@ -2,45 +2,28 @@ import { useState } from "react";
 
 function ManualEntry() {
   const [food, setFood] = useState("");
-  const [amount, setAmount] = useState("");
-  const [calories, setCalories] = useState("");
-  const [protein, setProtein] = useState("");
-  const [carbs, setCarbs] = useState("");
-  const [fat, setFat] = useState("");
+  const [portion, setPortion] = useState("medium");
+  const [nutrition, setNutrition] = useState(null);
+  const [dishName, setDishName] = useState(""); // GPT-corrected name
 
   const handleSubmit = async () => {
-    // Build meal object
-    const newMeal = {
-      food,
-      amount,
-      calories: parseFloat(calories) || 0,
-      protein: parseFloat(protein) || 0,
-      carbs: parseFloat(carbs) || 0,
-      fat: parseFloat(fat) || 0,
-      date: new Date().toISOString().split("T")[0], // for frontend
-    };
-
     try {
-      // Send to backend
       const res = await fetch("http://localhost:8000/analyze-manual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newMeal),
+        body: JSON.stringify({ food, portion }),
       });
+      if (!res.ok) throw new Error("Failed to fetch nutrition");
 
-      if (!res.ok) throw new Error("Failed to save meal");
-
-      alert("Meal added successfully!");
-      // Reset form
-      setFood("");
-      setAmount("");
-      setCalories("");
-      setProtein("");
-      setCarbs("");
-      setFat("");
+      const data = await res.json();
+      setNutrition(data.nutrition);
+      setDishName(data.food);       // GPT-corrected name
+      setFood(data.food);           // pre-fill input with corrected name
+      alert(`Added ${data.food} successfully!`);
+      setPortion("medium");
     } catch (err) {
       console.error(err);
-      alert("Error adding meal");
+      alert("Error fetching nutrition info");
     }
   };
 
@@ -53,37 +36,24 @@ function ManualEntry() {
         value={food}
         onChange={(e) => setFood(e.target.value)}
       />
-      <input
-        placeholder="Amount / Portion"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <input
-        placeholder="Calories"
-        type="number"
-        value={calories}
-        onChange={(e) => setCalories(e.target.value)}
-      />
-      <input
-        placeholder="Protein (g)"
-        type="number"
-        value={protein}
-        onChange={(e) => setProtein(e.target.value)}
-      />
-      <input
-        placeholder="Carbs (g)"
-        type="number"
-        value={carbs}
-        onChange={(e) => setCarbs(e.target.value)}
-      />
-      <input
-        placeholder="Fat (g)"
-        type="number"
-        value={fat}
-        onChange={(e) => setFat(e.target.value)}
-      />
+
+      <select value={portion} onChange={(e) => setPortion(e.target.value)}>
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+      </select>
 
       <button onClick={handleSubmit}>Add Food</button>
+
+      {nutrition && (
+        <div style={{ marginTop: "20px" }}>
+          <h2>Nutrition Info for {dishName}</h2>
+          <p>Calories: {nutrition.calories}</p>
+          <p>Protein: {nutrition.protein}g</p>
+          <p>Fat: {nutrition.fat}g</p>
+          <p>Carbs: {nutrition.carbs}g</p>
+        </div>
+      )}
     </div>
   );
 }
