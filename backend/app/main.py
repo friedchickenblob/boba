@@ -21,6 +21,7 @@ from fastapi.responses import RedirectResponse
 
 from starlette.middleware.sessions import SessionMiddleware
 
+from fastapi import HTTPException, Request
 
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
@@ -338,14 +339,19 @@ async def chat_endpoint(request: ChatRequest):
 
 #     except Exception as e:
 #         return {"reply": f"Sorry, something went wrong: {str(e)}"}
+
 @app.get("/summary/daily-log")
-def daily_log():
+def daily_log(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     db = SessionLocal()
     today = date.today()
     
-    # Fetch all logs for today, ordered by newest first
     logs = db.query(FoodLog).filter(
-        func.date(FoodLog.timestamp) == today
+        func.date(FoodLog.timestamp) == today,
+        FoodLog.user_id == str(user_id)  # <-- only fetch current user's logs
     ).order_by(FoodLog.timestamp.desc()).all()
     
     db.close()
@@ -358,7 +364,7 @@ def daily_log():
             "protein": log.protein,
             "fat": log.fat,
             "carbs": log.carbs,
-            "time": log.timestamp.strftime("%H:%M") # Format time as HH:MM
+            "time": log.timestamp.strftime("%H:%M")
         } for log in logs
     ]
 
