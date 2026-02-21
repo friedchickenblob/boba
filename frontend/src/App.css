@@ -1426,3 +1426,171 @@ body {
     order: 2; /* Put context below chat on mobile */
   }
 }
+/* Tips Grid */
+.tips-section {
+  margin-top: 60px;
+  padding-bottom: 40px;
+}
+
+.tips-header {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.tip-card {
+  padding: 30px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(0,0,0,0.05); /* very subtle border */
+}
+
+.tip-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
+
+.tip-card h3 {
+  font-size: 1.25rem;
+  margin: 0 0 10px 0;
+  color: #111827;
+}
+
+.tip-card p {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.read-more {
+  margin-top: 20px;
+  font-weight: 700;
+  color: #3b82f6;
+  font-size: 0.85rem;
+}
+
+/* Modal Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-image-container {
+  width: 100%;
+  height: 250px;
+  margin: -50px -50px 30px -50px; /* Pulls image to the edges of the modal padding */
+  width: calc(100% + 100px);
+  overflow: hidden;
+  border-radius: 30px 30px 0 0;
+}
+.modal-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 600px;
+  padding: 50px;
+  border-radius: 30px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.close-modal {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: #f3f4f6;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-tag {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.modal-divider {
+  height: 5px;
+  width: 60px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+
+.modal-body h2 {
+  font-size: 2rem;
+  margin: 20px 0;
+  line-height: 1.2;
+}
+
+.modal-body p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #4b5563;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal-list {
+  list-style: none; /* Remove default bullets */
+  padding: 0;
+  margin: 0;
+}
+
+.modal-list li {
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 15px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+/* Custom Bullet Points */
+.modal-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #3b82f6; /* Use your accent color */
+  font-weight: bold;
+  font-size: 1.5rem;
+  line-height: 1;
+}
