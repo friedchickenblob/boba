@@ -1,9 +1,44 @@
 import React, { useEffect, useState } from "react";
 import NutritionChat from "./NutritionChat";
 import "../App.css";
+import examImg from "../assets/cramming.jpg";
+import fluImg from "../assets/flu.jpg";
+import crampsImg from "../assets/cramp.jpg";
 
 export default function AiAdvice() {
   const [summary, setSummary] = useState(null);
+  const [selectedTip, setSelectedTip] = useState(null); 
+
+  const healthyTips = [
+    {
+      id: "exams",
+      title: "Healthy Eating during Exam Season",
+      short: "Boost brain power and focus.",
+      content: [
+      "Prioritize Omega-3s (Walnuts, Salmon) for brain health.", "Eat complex carbs like Oats (granola) for sustained energy.",  "Avoid sugar crashes from energy drinks and sodas.", "High protein foods like eggs and lean meats support brain function.", "Stay hydrated to maintain concentration."],
+      color: "#e0f2fe", // Light Blue
+      accent: "#3b82f6",
+      img: examImg
+    },
+    {
+      id: "flu",
+      title: "What to eat when you have the Flu",
+      short: "Foods that help you recover faster.",
+      content: ["Focus on hydration and zinc-rich foods (Eggs, yogurt, lean meats, and nut).", "Chicken soup provides electrolytes and helps clear nasal passages.", "Vitamin C from citrus fruits and berries supports the immune system.", "Avoid heavy, greasy foods that can be hard to digest."],
+      color: "#fef3c7", // Light Amber
+      accent: "#f59e0b",
+      img: fluImg
+    },
+    {
+      id: "cramps",
+      title: "Using Food against Menstrual Pain",
+      short: "Manage inflammation and cramps.",
+      content: ["Magnesium-rich foods like dark chocolate and dark leafy greens (spinach or kale) help relax muscles.", "Anti-inflammatory ginger tea can significantly reduce pain.", "High-water content foods like watermelon, cucumber, lettuce, and berries reduce bloating.", "Avoid caffeine and salty foods to prevent worsening cramps and bloating."],
+      color: "#fce7f3", // Light Pink
+      accent: "#ec4899",
+      img: crampsImg
+    }
+    ];
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -70,6 +105,56 @@ export default function AiAdvice() {
           <NutritionChat summary={summary} />
         </main>
       </div>
+
+      <section className="tips-section">
+        <h2 className="tips-header">Healthy Tips</h2>
+        <div className="tips-grid">
+          {healthyTips.map((tip) => (
+            <div 
+              key={tip.id} 
+              className="tip-card" 
+              onClick={() => setSelectedTip(tip)}
+              style={{ backgroundColor: tip.color, borderLeft: `6px solid ${tip.accent}` }}
+            >
+              <h3>{tip.title}</h3>
+              <p>{tip.short}</p>
+              <span className="read-more" style={{ color: tip.accent }}>Read More →</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {selectedTip && (
+        <div className="modal-overlay" onClick={() => setSelectedTip(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-modal" onClick={() => setSelectedTip(null)}>✕</button>
+            
+            {/* NEW: Image at the top of the Modal */}
+            <div className="modal-image-container">
+              <img src={selectedTip.img} alt={selectedTip.title} className="modal-hero-img" />
+            </div>
+
+            <div className="modal-body">
+              <span className="modal-tag" style={{ backgroundColor: selectedTip.color, color: selectedTip.accent }}>
+                HEALTHY TIPS
+              </span>
+              <h2>{selectedTip.title}</h2>
+              <div className="modal-divider" style={{ backgroundColor: selectedTip.accent }}></div>
+              
+              {/* Check if content is an array and map it */}
+              <ul className="modal-list">
+                {Array.isArray(selectedTip.content) ? (
+                  selectedTip.content.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))
+                ) : (
+                  <li>{selectedTip.content}</li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
