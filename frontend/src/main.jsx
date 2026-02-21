@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import CaptureFood from "./components/CaptureFood";
-import ManualEntry from "./components/ManualEntry";
+import SearchFood from "./components/SearchFood";
 import LandingPage from "./components/LandingPage"; // This will hold Hero and Blocks
 import Navbar from "./components/Navbar";       // This will hold your Nav logic
 import './index.css'
@@ -16,7 +16,7 @@ function AppWrapper() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/capture" element={<CaptureFood />} />
-        <Route path="/manual" element={<ManualEntry />} />
+        <Route path="/manual" element={<SearchFood />} />
         <Route path="/advice" element={
           <div className="p-20 text-center text-2xl font-bold">
             AI Nutrition Advice Coming Soon...

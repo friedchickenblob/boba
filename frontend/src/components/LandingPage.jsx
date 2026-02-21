@@ -50,6 +50,13 @@ export default function LandingPage() {
           desc="Personalized health tips." 
           className="card-advice" 
         />
+        <FeatureBlock 
+          link="/manual" 
+          icon="✍️" 
+          title="Search Food" 
+          desc="Search for food calories" 
+          className="card-manual" 
+        />
       </section>
     </div>
   );

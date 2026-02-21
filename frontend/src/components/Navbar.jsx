@@ -21,7 +21,7 @@ const Navbar = () => {
           Scan Food
         </Link>
         <Link to="/manual" className={`nav-item ${location.pathname === '/manual' ? 'active' : ''}`}>
-          Manual Entry
+          Search Food
         </Link>
         <button className="login-btn">Login</button>
       </div>

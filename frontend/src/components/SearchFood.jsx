@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function ManualEntry() {
+function SearchFood() {
   const [food, setFood] = useState("");
   const [portion, setPortion] = useState("medium");
   const [nutrition, setNutrition] = useState(null);
@@ -58,4 +58,4 @@ function ManualEntry() {
   );
 }
 
-export default ManualEntry;
+export default SearchFood;

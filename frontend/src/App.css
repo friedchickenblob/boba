@@ -221,6 +221,7 @@ body {
 .card-summary { background-color: #d9f2d1; } /* Pastel Green */
 .card-scan    { background-color: #d1ebf2; } /* Pastel Blue */
 .card-advice  { background-color: #f2f0d1; } /* Pastel Yellow */
+.card-manual  { background-color: #f9d1f2; } /* Pastel Pink */
 
 /* Dashboard Layout */
 .dashboard-wrapper {
