@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from .models import Base
+import os
 
 # SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"  # dev only
 SQLALCHEMY_DATABASE_URL = os.environ.get("DATABASE_URL")
