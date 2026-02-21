@@ -5,7 +5,7 @@ export async function analyzeFood(file, portion) {
   formData.append("file", file);
   formData.append("portion", portion); 
 
-  const response = await fetch("http://localhost:8000/analyze", {
+  const response = await fetch("https://boba-production-751f.up.railway.app/analyze", {
     method: "POST",
     // IMPORTANT: Do NOT set "Content-Type" headers. 
     // The browser will automatically set it to multipart/form-data with the correct boundary.

@@ -64,15 +64,15 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dailyRes = await fetch("https://boba-production-751f.up.railway.app:8000/summary/daily", { credentials: "include" });
+        const dailyRes = await fetch("https://boba-production-751f.up.railway.app/summary/daily", { credentials: "include" });
         const dailyData = await dailyRes.json();
         setSummary(dailyData.totals);
 
-        const logRes = await fetch("https://boba-production-751f.up.railway.app:8000/summary/daily-log", { credentials: "include" });
+        const logRes = await fetch("https://boba-production-751f.up.railway.app/summary/daily-log", { credentials: "include" });
         const logData = await logRes.json();
         setDailyItems(logData);
 
-        const weeklyRes = await fetch("https://boba-production-751f.up.railway.app:8000/summary/weekly", { credentials: "include" });
+        const weeklyRes = await fetch("https://boba-production-751f.up.railway.app/summary/weekly", { credentials: "include" });
         const weeklyData = await weeklyRes.json();
         setWeeklyData(weeklyData.totals);
       } catch (err) {
@@ -84,7 +84,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchGoals = async () => {
-      const res = await fetch("https://boba-production-751f.up.railway.app:8000/goals/daily", { credentials: "include" });
+      const res = await fetch("https://boba-production-751f.up.railway.app/goals/daily", { credentials: "include" });
       const data = await res.json();
 
       if (data?.calories && data.calories > 0) {

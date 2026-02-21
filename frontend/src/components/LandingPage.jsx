@@ -11,7 +11,7 @@ export default function LandingPage() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetch("https://boba-production-751f.up.railway.app:8000/auth/me", {
+    fetch("https://boba-production-751f.up.railway.app/auth/me", {
       credentials: "include",
     })
       .then(res => res.json())
