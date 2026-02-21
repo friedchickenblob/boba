@@ -33,12 +33,16 @@ app = FastAPI(title="Calorie AI Backend")
 
 app.add_middleware(SessionMiddleware, secret_key=os.environ["SESSION_SECRET"], same_site="lax")
 
+origins = [
+    "https://boba-liard.vercel.app",  # your frontend URL
+]
+
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=origins,  # <- frontend domains allowed
     allow_credentials=True,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],    # allow GET, POST, etc.
+    allow_headers=["*"],    # allow all headers
 )
 
 app.include_router(discord_router)
