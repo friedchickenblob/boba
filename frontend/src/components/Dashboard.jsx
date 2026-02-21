@@ -22,6 +22,7 @@ export default function Dashboard() {
   const [view, setView] = useState("daily"); 
   const [summary, setSummary] = useState(null);
   const [weeklyData, setWeeklyData] = useState(null);
+  const [dailyItems, setDailyItems] = useState([]);
   
   const today = new Date().toLocaleDateString('en-US', { 
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
@@ -33,6 +34,10 @@ export default function Dashboard() {
         const dailyRes = await fetch("http://localhost:8000/summary/daily");
         const dailyData = await dailyRes.json();
         setSummary(dailyData.totals);
+
+        const logRes = await fetch("http://localhost:8000/summary/daily-log");
+        const logData = await logRes.json();
+        setDailyItems(logData);
 
         const weeklyRes = await fetch("http://localhost:8000/summary/weekly");
         const weeklyData = await weeklyRes.json();
@@ -91,6 +96,42 @@ export default function Dashboard() {
             <MacroCard label="Carbs" value={summary.carbs} unit="g" className="carbs-card" icon="🍞" />
             <MacroCard label="Fat" value={summary.fat} unit="g" className="fat-card" icon="🥑" />
           </div>
+
+          <section className="log-section">
+            <h2 className="section-title">Today's Meals</h2>
+            <div className="table-container">
+              <table className="food-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Food Item</th>
+                    <th>Calories</th>
+                    <th>Macros (P/C/F)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dailyItems.length > 0 ? (
+                    dailyItems.map((item) => (
+                      <tr key={item.id}>
+                        <td className="time-col">{item.time}</td>
+                        <td className="food-name-col">{item.food}</td>
+                        <td className="cal-col"><strong>{item.calories}</strong> kcal</td>
+                        <td className="macro-col">
+                          <span className="p-tag">{item.protein}g</span>
+                          <span className="c-tag">{item.carbs}g</span>
+                          <span className="f-tag">{item.fat}g</span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" className="empty-msg">No meals logged yet today.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
         </div>
       ) : (
         <div className="weekly-calendar-grid animate-fade">

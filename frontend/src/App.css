@@ -855,3 +855,69 @@ body {
 .camera-toggle-btn:hover {
   color: #16a34a;
 }
+.log-section {
+  margin-top: 40px;
+  text-align: left;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1f2937;
+}
+
+.table-container {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #f3f4f6;
+  overflow: hidden; /* Rounds the table corners */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.food-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.food-table th {
+  background: #f9fafb;
+  padding: 15px 20px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #6b7280;
+  border-bottom: 1px solid #f3f4f6;
+  text-align: left;
+}
+
+.food-table td {
+  padding: 18px 20px;
+  border-bottom: 1px solid #f9fafb;
+  color: #374151;
+}
+
+.time-col { color: #9ca3af; font-size: 0.9rem; }
+.food-name-col { font-weight: 600; color: #111827; }
+
+.macro-col {
+  display: flex;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.macro-col span {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.p-tag { background: #eff6ff; color: #1e40af; }
+.c-tag { background: #fff7ed; color: #9a3412; }
+.f-tag { background: #fefce8; color: #854d0e; }
+
+.empty-msg {
+  text-align: center;
+  padding: 40px !important;
+  color: #9ca3af;
+  font-style: italic;
+}
