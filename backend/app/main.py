@@ -5,7 +5,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from app.vision import detect_food
 from app.nutrition import get_nutrition
-from app.models import Base, FoodLog
+from app.models import Base, FoodLog, User
 from app.database import engine, SessionLocal
 from datetime import datetime, date,  timedelta
 from sqlalchemy import func
@@ -51,6 +51,9 @@ async def analyze_food(
     # ---- SAVE TO DATABASE ----
     if main_food != "unknown":
         db = SessionLocal()
+        # user = db.query(User).filter(User.discord_id == "435939911455997952").first()
+        user = db.query(User).first()
+
 
         entry = FoodLog(
             food=main_food,
@@ -58,7 +61,8 @@ async def analyze_food(
             protein=nutrition["total"]["protein"],
             fat=nutrition["total"]["fat"],
             carbs=nutrition["total"]["carbs"],
-            timestamp=datetime.utcnow()
+            timestamp=datetime.utcnow(),
+            user_id=user.id   # associate with user
         )
 
         db.add(entry)
@@ -124,7 +128,6 @@ def weekly_summary():
             "carbs": round(result.carbs or 0, 2),
         }
     }
-<<<<<<< HEAD
 
 class ManualFoodEntry(BaseModel):
     food: str
@@ -171,9 +174,12 @@ def analyze_manual(entry: ManualFoodEntry):
         carbs=carbs,
         timestamp=datetime.utcnow()
     )
-    db.add(log)
-    db.commit()
-    db.close()
+
+    try:
+        db.add(log)
+        db.commit()
+    finally:
+        db.close()
 
     return {
         "food": food_name,       # return GPT-corrected name
@@ -185,5 +191,3 @@ def analyze_manual(entry: ManualFoodEntry):
             "carbs": carbs
         }
     }
-=======
->>>>>>> main-cool

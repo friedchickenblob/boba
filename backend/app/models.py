@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, Float, String, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, Float, String, Boolean, String, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 
@@ -18,7 +17,9 @@ class FoodLog(Base):
     fat = Column(Float)
     carbs = Column(Float)
 
-Base = declarative_base()
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="food_logs")
+
 
 class User(Base):
     __tablename__ = "users"
@@ -29,3 +30,5 @@ class User(Base):
     email = Column(String, unique=True)
     verified = Column(Boolean, default=False)
     avatar = Column(String, nullable=True)
+
+    food_logs = relationship("FoodLog", back_populates="user")
