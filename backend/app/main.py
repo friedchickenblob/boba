@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from app.vision import detect_food
@@ -10,6 +13,7 @@ from fastapi import Form
 import os
 from pydantic import BaseModel
 from openai import OpenAI
+from app.auth.discord import router as discord_router
 
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
@@ -24,6 +28,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(discord_router)
+
+@app.get("/debug/users")
+def list_users(db):
+    return db.query(User).all()
 
 @app.post("/analyze")
 async def analyze_food(
@@ -114,6 +124,7 @@ def weekly_summary():
             "carbs": round(result.carbs or 0, 2),
         }
     }
+<<<<<<< HEAD
 
 class ManualFoodEntry(BaseModel):
     food: str
@@ -174,3 +185,5 @@ def analyze_manual(entry: ManualFoodEntry):
             "carbs": carbs
         }
     }
+=======
+>>>>>>> main-cool

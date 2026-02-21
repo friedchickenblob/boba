@@ -7,3 +7,5 @@ openai
 pillow
 sqlalchemy
 pydantic
+httpx
+python-jose
