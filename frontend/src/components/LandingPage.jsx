@@ -6,9 +6,12 @@ import scanIcon from "../assets/scan.png";
 import adviceIcon from "../assets/advice.png";
 import searchIcon from "../assets/search.png";
 import goalsIcon from "../assets/target.png";
+import achievementsIcon from "../assets/badge.png";
+
 
 export default function LandingPage() {
   const [user, setUser] = useState(null);
+  const [achievements, setAchievements] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:8000/auth/me", {
@@ -19,6 +22,22 @@ export default function LandingPage() {
         setUser(data.user);
       });
   }, []);
+
+  // Change your fetch to handle the data better
+  useEffect(() => {
+    fetch("http://localhost:8000/achievements", { credentials: "include" })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Achievement Data:", data); // DEBUG: Check your console!
+        setAchievements({
+          streak: data.streak || 0,
+          calorie_streak: data.calorie_streak || 0,
+          protein_days: data.protein_days || 0
+        });
+      })
+      .catch(err => console.error("Fetch error:", err));
+  }, []);
+
 
   return (
     <div className="landing-container">
@@ -34,6 +53,31 @@ export default function LandingPage() {
           </h2>
         )}
       </header>
+
+      {achievements && (
+        <div className="achievement-banner">
+          {/* Logging Streak - Always show if > 0 */}
+          {achievements.streak > 0 && (
+            <div className="badge fire">
+              🔥 {achievements.streak}-Day Streak
+            </div>
+          )}
+
+          {/* Calorie Streak - Show if they've hit it at least once */}
+          {achievements.calorie_streak > 0 && (
+            <div className="badge target">
+              🎯 {achievements.calorie_streak} Day Goal Hit
+            </div>
+          )}
+
+          {/* Protein Badge - Show if they've hit it at least once this week */}
+          {achievements.protein_days > 0 && (
+            <div className="badge protein">
+              🥇 {achievements.protein_days}/7 Protein Days
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -94,12 +138,21 @@ export default function LandingPage() {
           className="card-manual" 
         />
 
+
         <FeatureBlock 
           link="/goals" 
           icon={<img src={goalsIcon} alt="Set Goals" className="feature-icon" />} 
           title="Set Goals" 
           desc="Set Daily Goals" 
           className="card-goals" 
+        />
+
+        <FeatureBlock 
+          link="/achievements/full" 
+          icon={<img src={achievementsIcon} alt="Achievements" className="feature-icon" />} 
+          title="Achievements" 
+          desc="See your weekly achievements and streaks" 
+          className="card-achievements" 
         />
 
       </section>

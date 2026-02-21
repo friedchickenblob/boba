@@ -54,6 +54,12 @@ const Navbar = () => {
         <Link to="/advice" className={`nav-item ${location.pathname === "/advice" ? "active" : ""}`}>
           Nutrition Advice
         </Link>
+        <Link to="/goals" className={`nav-item ${location.pathname === "/goals" ? "active" : ""}`}>
+          Set Goals
+        </Link>
+        <Link to="/achievements/full" className={`nav-item ${location.pathname === "/achievements/full" ? "active" : ""}`}>
+          Achievements
+        </Link>
 
         {!loading ? (
           user ? (
