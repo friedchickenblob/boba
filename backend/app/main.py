@@ -171,3 +171,27 @@ def log_manual(data: dict): # Expecting food name and nutrition values
     db.commit()
     db.close()
     return {"status": "success", "message": "Meal logged!"}
+
+@app.get("/summary/daily-log")
+def daily_log():
+    db = SessionLocal()
+    today = date.today()
+    
+    # Fetch all logs for today, ordered by newest first
+    logs = db.query(FoodLog).filter(
+        func.date(FoodLog.timestamp) == today
+    ).order_by(FoodLog.timestamp.desc()).all()
+    
+    db.close()
+    
+    return [
+        {
+            "id": log.id,
+            "food": log.food,
+            "calories": log.calories,
+            "protein": log.protein,
+            "fat": log.fat,
+            "carbs": log.carbs,
+            "time": log.timestamp.strftime("%H:%M") # Format time as HH:MM
+        } for log in logs
+    ]

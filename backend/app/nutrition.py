@@ -25,9 +25,9 @@ def search_food(query):
     return data["foods"][0]
 
 PORTION_MULTIPLIER = {
-    "small": 1.5,
-    "medium": 2,
-    "large": 2.5
+    "small": 0.5,
+    "medium": 1,
+    "large": 2
 }
 
 def get_nutrition(main, components, portions):
