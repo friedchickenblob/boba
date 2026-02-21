@@ -1,23 +1,32 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import "../App.css"; // Make sure to import your CSS file!
 
-function Navbar() {
+const Navbar = () => {
+  const location = useLocation();
+
   return (
-    <nav style={{ 
-      display: "flex", justifyContent: "space-between", alignItems: "center", 
-      padding: "1rem 5%", background: "#fff", borderBottom: "1px solid #eee" 
-    }}>
-      <div style={{ fontWeight: "bold", color: "#2d5a27", fontSize: "1.5rem" }}>🥗 NutriTrack</div>
-      <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-        <Link to="/">Home</Link>
-        <Link to="/dashboard">Summary</Link>
-        <Link to="/capture">Scan Food</Link>
-        <Link to="/advice">Advice</Link>
-        <button style={{ 
-          background: "#2d5a27", color: "white", border: "none", 
-          padding: "8px 20px", borderRadius: "20px", cursor: "pointer" 
-        }}>Login</button>
+    <nav className="navbar">
+      <Link to="/" className="nav-logo">
+        NutriScan <span style={{ color: '#66a33d' }}>AI</span>
+      </Link>
+      
+      <div className="nav-links">
+        <Link to="/" className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}>
+          Home
+        </Link>
+        <Link to="/dashboard" className={`nav-item ${location.pathname === '/dashboard' ? 'active' : ''}`}>
+          Summary
+        </Link>
+        <Link to="/capture" className={`nav-item ${location.pathname === '/capture' ? 'active' : ''}`}>
+          Scan Food
+        </Link>
+        <Link to="/manual" className={`nav-item ${location.pathname === '/manual' ? 'active' : ''}`}>
+          Manual Entry
+        </Link>
+        <button className="login-btn">Login</button>
       </div>
     </nav>
   );
-}
+};
+
 export default Navbar;

@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../App.css";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [summary, setSummary] = useState(null);
-  const today = new Date().toISOString().split("T")[0];
+  
+  const today = new Date().toLocaleDateString('en-US', { 
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+  });
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -16,24 +20,57 @@ export default function Dashboard() {
         console.error(err);
       }
     };
-
     fetchSummary();
   }, []);
 
-  if (!summary) return <p>Loading...</p>;
+  if (!summary) return (
+    <div className="loader-container">
+      <div className="spinner"></div>
+      <p>Fetching your data...</p>
+    </div>
+  );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Smart Calorie Tracker</h1>
-      <p>{today}</p>
-      <p>Calories: {summary.calories} kcal</p>
-      <p>Protein: {summary.protein} g</p>
-      <p>Carbs: {summary.carbs} g</p>
-      <p>Fat: {summary.fat} g</p>
+    <div className="dashboard-wrapper">
+      <header className="dashboard-header">
+        <h1>Daily Summary</h1>
+        <p className="date-display">{today}</p>
+      </header>
 
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={() => navigate("/capture")}>Capture Food</button>
-        <button onClick={() => navigate("/manual")}>Add Food Manually</button>
+      {/* Main Energy Card */}
+      <div className="energy-card">
+        <div className="energy-info">
+          <span className="stat-label">Energy Intake</span>
+          <div className="calorie-count">
+            {summary.calories} <span className="unit">kcal</span>
+          </div>
+        </div>
+        
+        <div className="action-buttons">
+          <button onClick={() => navigate("/capture")} className="btn-primary">+ Scan Meal</button>
+          <button onClick={() => navigate("/manual")} className="btn-secondary">Manual Entry</button>
+        </div>
+      </div>
+
+      {/* Macro Grid */}
+      <div className="macro-grid">
+        <MacroCard label="Protein" value={summary.protein} unit="g" className="protein-card" icon="🥩" />
+        <MacroCard label="Carbs" value={summary.carbs} unit="g" className="carbs-card" icon="🍞" />
+        <MacroCard label="Fat" value={summary.fat} unit="g" className="fat-card" icon="🥑" />
+      </div>
+    </div>
+  );
+}
+
+function MacroCard({ label, value, unit, className, icon }) {
+  return (
+    <div className={`macro-card ${className}`}>
+      <div className="macro-header">
+        <span className="macro-icon">{icon}</span>
+        <span className="macro-label">{label}</span>
+      </div>
+      <div className="macro-value">
+        {value} <span className="macro-unit">{unit}</span>
       </div>
     </div>
   );

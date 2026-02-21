@@ -1,13 +1,22 @@
 function Results({ meals }) {
   return (
-    <div style={{ marginTop: "20px" }}>
-      <h2>Meal History</h2>
-      {meals.map((meal, index) => (
-        <div key={index} style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px" }}>
-          <p><strong>{meal.food}</strong></p>
-          <p>{meal.calories} kcal</p>
-        </div>
-      ))}
+    <div className="results-container">
+      <h2 className="section-title">Meal History</h2>
+      <div className="meals-list">
+        {meals.map((meal, index) => (
+          <div key={index} className="meal-log-card">
+            <div className="meal-info">
+              <span className="meal-name">{meal.food}</span>
+              <span className="meal-date">{meal.date}</span>
+            </div>
+            <div className="meal-stats">
+              <div className="mini-badge">{meal.calories} kcal</div>
+              <div className="mini-badge gray">{meal.protein}g P</div>
+              <div className="mini-badge gray">{meal.carbs}g C</div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

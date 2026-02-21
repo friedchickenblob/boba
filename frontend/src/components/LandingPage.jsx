@@ -1,49 +1,67 @@
 import { Link } from "react-router-dom";
+import "../App.css";
 
-function LandingPage() {
+export default function LandingPage() {
   return (
-    <div>
+    <div className="landing-container">
       {/* Hero Section */}
-      <section style={{ 
-        display: "flex", padding: "50px 5%", alignItems: "center", background: "#fdfdfd" 
-      }}>
-        <div style={{ flex: 1 }}>
-          <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600" 
-               alt="Healthy Eating" style={{ width: "100%", borderRadius: "10px" }} />
-        </div>
-        <div style={{ flex: 1, paddingLeft: "40px" }}>
-          <h1 style={{ fontSize: "3rem", color: "#333" }}>Change your life in the next 90 days</h1>
-          <p style={{ color: "#666", lineHeight: "1.6" }}>
-            Our AI-powered platform helps you track nutrition through simple habit changes. 
-            Snap a photo, get instant data, and transform your health.
+      <section className="hero-section">
+        <div className="hero-content">
+          <h1 className="hero-title">
+            Change your life in the <br />
+            <span className="accent-text">next 90 days.</span>
+          </h1>
+          <p className="hero-subtitle">
+            Identify food instantly, track your nutrition habits, and get AI-driven advice to reach your goals.
           </p>
-          <Link to="/capture">
-            <button style={{ padding: "12px 30px", background: "#2d5a27", color: "white", border: "none", borderRadius: "5px" }}>
-              Start Scanning Now
-            </button>
+          <Link to="/capture" className="cta-button">
+            Start Scanning
           </Link>
+        </div>
+        <div className="hero-image-container">
+          <img 
+            src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800" 
+            alt="Healthy Food" 
+            className="hero-image"
+          />
         </div>
       </section>
 
-      {/* 3 Blocks Section */}
-      <section style={{ display: "flex", gap: "20px", padding: "50px 5%", background: "#fff" }}>
-        <FeatureCard title="Calorie Summary" link="/dashboard" bg="#e8f5e9" img="📊" />
-        <FeatureCard title="Scan Image" link="/capture" bg="#f1f8e9" img="📸" />
-        <FeatureCard title="Nutrition Advice" link="/advice" bg="#f9fbe7" img="💡" />
+      {/* Feature Blocks */}
+      <section className="features-grid">
+        <FeatureBlock 
+          link="/dashboard" 
+          icon="📊" 
+          title="Summary" 
+          desc="View your daily nutrition progress." 
+          className="card-summary" 
+        />
+        <FeatureBlock 
+          link="/capture" 
+          icon="📸" 
+          title="Scan Food" 
+          desc="AI photo recognition." 
+          className="card-scan" 
+        />
+        <FeatureBlock 
+          link="/advice" 
+          icon="💡" 
+          title="AI Advice" 
+          desc="Personalized health tips." 
+          className="card-advice" 
+        />
       </section>
     </div>
   );
 }
 
-function FeatureCard({ title, link, bg, img }) {
+function FeatureBlock({ link, icon, title, desc, className }) {
   return (
-    <Link to={link} style={{ flex: 1, textDecoration: "none", color: "inherit" }}>
-      <div style={{ background: bg, padding: "40px", textAlign: "center", borderRadius: "12px", transition: "0.3s" }}>
-        <div style={{ fontSize: "2rem" }}>{img}</div>
-        <h3>{title}</h3>
-        <p>Click to explore this feature</p>
-      </div>
+    <Link to={link} className={`feature-card ${className}`}>
+      <div className="feature-icon">{icon}</div>
+      <h3 className="feature-title">{title}</h3>
+      <p className="feature-desc">{desc}</p>
+      <div className="feature-footer">{`</${title.toLowerCase().replace(/\s/g, '')}>`}</div>
     </Link>
   );
 }
-export default LandingPage;
