@@ -228,9 +228,41 @@ def analyze_manual(entry: ManualFoodEntry):
         "nutrition": nutrition
     }
 
-# 2. LOG TO DATABASE (Triggered by 'Confirm' button)
+@app.get("/summary/daily-log")
+def daily_log(request: Request): # Add request here
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return [] # Return empty if not logged in
+
+    db = SessionLocal()
+    today = date.today()
+    
+    # Filter by user_id so users only see their own food
+    logs = db.query(FoodLog).filter(
+        func.date(FoodLog.timestamp) == today,
+        FoodLog.user_id == str(user_id) 
+    ).order_by(FoodLog.timestamp.desc()).all()
+    
+    db.close()
+    
+    return [
+        {
+            "id": log.id,
+            "food": log.food,
+            "calories": log.calories,
+            "protein": log.protein,
+            "fat": log.fat,
+            "carbs": log.carbs,
+            "time": log.timestamp.strftime("%H:%M")
+        } for log in logs
+    ]
+
 @app.post("/log-manual")
-def log_manual(data: dict): # Expecting food name and nutrition values
+def log_manual(data: dict, request: Request): # Add request here
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return {"error": "Not authenticated"}, 401
+
     db = SessionLocal()
     log = FoodLog(
         food=data["food"],
@@ -238,25 +270,20 @@ def log_manual(data: dict): # Expecting food name and nutrition values
         protein=data["protein"],
         fat=data["fat"],
         carbs=data["carbs"],
-        timestamp=datetime.now()
+        timestamp=datetime.utcnow(), # Use UTC for consistency
+        user_id=str(user_id) # Assign the user here!
     )
 
     try:
         db.add(log)
         db.commit()
+    except Exception as e:
+        print(f"Error logging: {e}")
+        return {"error": "Database error"}
     finally:
         db.close()
 
-    return {
-        "food": food_name,       # return GPT-corrected name
-        "portion": entry.portion,
-        "nutrition": {
-            "calories": calories,
-            "protein": protein,
-            "fat": fat,
-            "carbs": carbs
-        }
-    }
+    return {"status": "success", "food": data["food"]}
 
 # Request body model
 class ChatRequest(BaseModel):
@@ -294,28 +321,6 @@ async def chat_endpoint(request: ChatRequest):
     except Exception as e:
         return {"reply": f"Sorry, something went wrong: {str(e)}"}
 
-# @app.post("/api/chat", response_model=ChatResponse)
-# async def chat_endpoint(request: ChatRequest):
-#     user_message = request.message
-
-#     try:
-#         response = client.chat.completions.create(
-#             model="gpt-4",
-#             messages=[
-#                 {"role": "system", "content": "You are a helpful nutrition assistant."},
-#                 {"role": "user", "content": user_message}
-#             ],
-#             temperature=0.7,
-#             max_tokens=150
-#         )
-
-#         # Access content using dot notation
-#         reply = response.choices[0].message.content.strip()
-
-#         return {"reply": reply}
-
-#     except Exception as e:
-#         return {"reply": f"Sorry, something went wrong: {str(e)}"}
 @app.get("/summary/daily-log")
 def daily_log():
     db = SessionLocal()
@@ -368,5 +373,6 @@ def set_daily_goals(data: dict = Body(...)):
     db.commit()
     db.close()
     return {"status": "success", "goal": data}
+
 
 

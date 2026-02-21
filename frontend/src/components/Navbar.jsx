@@ -11,7 +11,6 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 check session on mount
   useEffect(() => {
   fetch("http://localhost:8000/auth/me", {
     credentials: "include",
