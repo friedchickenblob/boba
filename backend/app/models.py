@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, Float, String, Boolean, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
+from pydantic import BaseModel
 
 Base = declarative_base()
 
@@ -17,6 +18,7 @@ class FoodLog(Base):
     fat = Column(Float)
     carbs = Column(Float)
 
+<<<<<<< HEAD
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="food_logs")
 
@@ -32,3 +34,8 @@ class User(Base):
     avatar = Column(String, nullable=True)
 
     food_logs = relationship("FoodLog", back_populates="user")
+=======
+class ManualFoodEntry(BaseModel):
+    food: str
+    portion: str = "medium"
+>>>>>>> origin/main

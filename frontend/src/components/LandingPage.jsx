@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 import "../App.css";
+import summaryIcon from "../assets/summary.png";
+import scanIcon from "../assets/scan.png";
+import adviceIcon from "../assets/advice.png";
+import searchIcon from "../assets/search.png";
 
 export default function LandingPage() {
   return (
@@ -31,24 +35,34 @@ export default function LandingPage() {
       <section className="features-grid">
         <FeatureBlock 
           link="/dashboard" 
-          icon="📊" 
+          icon={<img src={summaryIcon} alt="Summary" className="feature-icon" />} 
           title="Summary" 
           desc="View your daily nutrition progress." 
           className="card-summary" 
         />
+
         <FeatureBlock 
           link="/capture" 
-          icon="📸" 
+          icon={<img src={scanIcon} alt="Scan Food" className="feature-icon" />} 
           title="Scan Food" 
           desc="AI photo recognition." 
           className="card-scan" 
         />
+
         <FeatureBlock 
           link="/advice" 
-          icon="💡" 
+          icon={<img src={adviceIcon} alt="AI Advice" className="feature-icon" />} 
           title="AI Advice" 
           desc="Personalized health tips." 
           className="card-advice" 
+        />
+
+        <FeatureBlock 
+          link="/manual" 
+          icon={<img src={searchIcon} alt="Search Food" className="feature-icon" />} 
+          title="Search Food" 
+          desc="Search for food calories" 
+          className="card-manual" 
         />
       </section>
     </div>
