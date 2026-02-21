@@ -13,6 +13,7 @@ from fastapi import Form
 import os
 from openai import OpenAI
 from app.auth.discord import router as discord_router
+from fastapi.responses import RedirectResponse
 
 
 from starlette.middleware.sessions import SessionMiddleware
@@ -36,6 +37,10 @@ app.add_middleware(
 )
 
 app.include_router(discord_router)
+
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/docs")
 
 @app.get("/auth/me")
 def get_current_user(request: Request):
