@@ -79,4 +79,4 @@ async def discord_callback(code: str, request: Request):
     db.close()
     # return {"message": "User saved", "user": {"id": user.id, "username": user.username}}
     # frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")  # your React app
-    return RedirectResponse(url=f"http://localhost:5173/capture")
+    return RedirectResponse(url=f"http://localhost:5173/")

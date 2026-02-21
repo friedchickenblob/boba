@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+from pydantic import BaseModel
 from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.vision import detect_food
@@ -129,9 +130,10 @@ async def analyze_food(
         "nutrition": nutrition
     }
 @app.get("/summary/daily")
-def daily_summary():
+def daily_summary(request: Request):
     db = SessionLocal()
     today = date.today()
+    print("what is sesion user id", str(request.session.get("user_id")))
 
     result = db.query(
         func.sum(FoodLog.calories).label("calories"),
@@ -139,7 +141,8 @@ def daily_summary():
         func.sum(FoodLog.fat).label("fat"),
         func.sum(FoodLog.carbs).label("carbs")
     ).filter(
-        func.date(FoodLog.timestamp) == today
+        func.date(FoodLog.timestamp) == today,
+        FoodLog.user_id == str(request.session.get("user_id"))
     ).first()
 
     db.close()
@@ -155,7 +158,7 @@ def daily_summary():
     }
 
 @app.get("/summary/weekly")
-def weekly_summary():
+def weekly_summary(request: Request):
     db = SessionLocal()
     today = date.today()
     week_start = today - timedelta(days=7)
@@ -166,7 +169,8 @@ def weekly_summary():
         func.sum(FoodLog.fat).label("fat"),
         func.sum(FoodLog.carbs).label("carbs")
     ).filter(
-        FoodLog.timestamp >= week_start
+        FoodLog.timestamp >= week_start,
+        FoodLog.user_id == str(request.session.get("user_id"))
     ).first()
 
     db.close()

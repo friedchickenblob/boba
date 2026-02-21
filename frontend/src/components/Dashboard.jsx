@@ -31,15 +31,15 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dailyRes = await fetch("http://localhost:8000/summary/daily");
+        const dailyRes = await fetch("http://localhost:8000/summary/daily", { credentials: "include" });
         const dailyData = await dailyRes.json();
         setSummary(dailyData.totals);
 
-        const logRes = await fetch("http://localhost:8000/summary/daily-log");
+        const logRes = await fetch("http://localhost:8000/summary/daily-log", { credentials: "include" });
         const logData = await logRes.json();
         setDailyItems(logData);
 
-        const weeklyRes = await fetch("http://localhost:8000/summary/weekly");
+        const weeklyRes = await fetch("http://localhost:8000/summary/weekly", { credentials: "include" });
         const weeklyData = await weeklyRes.json();
         setWeeklyData(weeklyData.totals);
       } catch (err) {

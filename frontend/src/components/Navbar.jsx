@@ -30,12 +30,13 @@ const Navbar = () => {
       credentials: "include",
     });
     setUser(null);
+    window.location.reload();
   };
 
   return (
     <nav className="navbar">
       <Link to="/" className="nav-logo">
-        NutriScan <span style={{ color: "#66a33d" }}>AI</span>
+        BobaScan <span style={{ color: "#66a33d" }}>AI</span>
       </Link>
 
       <div className="nav-links">
