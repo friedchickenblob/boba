@@ -5,11 +5,7 @@ from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.vision import detect_food
 from app.nutrition import get_nutrition
-<<<<<<< HEAD
-from app.models import Base, FoodLog, User
-=======
-from app.models import Base, FoodLog, ManualFoodEntry
->>>>>>> origin/main
+from app.models import Base, FoodLog, User, ManualFoodEntry
 from app.database import engine, SessionLocal
 from datetime import datetime, date,  timedelta
 from sqlalchemy import func
@@ -77,12 +73,8 @@ async def analyze_food(
             protein=nutrition["total"]["protein"],
             fat=nutrition["total"]["fat"],
             carbs=nutrition["total"]["carbs"],
-<<<<<<< HEAD
             timestamp=datetime.utcnow(),
             user_id=user.discord_id   # associate with user
-=======
-            timestamp=datetime.now()
->>>>>>> origin/main
         )
 
         db.add(entry)
@@ -209,7 +201,6 @@ def log_manual(data: dict): # Expecting food name and nutrition values
         carbs=data["carbs"],
         timestamp=datetime.now()
     )
-<<<<<<< HEAD
 
     try:
         db.add(log)
@@ -217,19 +208,4 @@ def log_manual(data: dict): # Expecting food name and nutrition values
     finally:
         db.close()
 
-    return {
-        "food": food_name,       # return GPT-corrected name
-        "portion": entry.portion,
-        "nutrition": {
-            "calories": calories,
-            "protein": protein,
-            "fat": fat,
-            "carbs": carbs
-        }
-    }
-=======
-    db.add(log)
-    db.commit()
-    db.close()
     return {"status": "success", "message": "Meal logged!"}
->>>>>>> origin/main

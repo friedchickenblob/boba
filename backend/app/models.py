@@ -18,7 +18,6 @@ class FoodLog(Base):
     fat = Column(Float)
     carbs = Column(Float)
 
-<<<<<<< HEAD
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="food_logs")
 
@@ -34,8 +33,6 @@ class User(Base):
     avatar = Column(String, nullable=True)
 
     food_logs = relationship("FoodLog", back_populates="user")
-=======
 class ManualFoodEntry(BaseModel):
     food: str
     portion: str = "medium"
->>>>>>> origin/main
