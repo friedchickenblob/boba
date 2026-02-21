@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import "../App.css"; // Make sure to import your CSS file!
+import "../App.css"; 
 
 const Navbar = () => {
   const location = useLocation();
@@ -22,6 +22,9 @@ const Navbar = () => {
         </Link>
         <Link to="/manual" className={`nav-item ${location.pathname === '/manual' ? 'active' : ''}`}>
           Search Food
+        </Link>
+        <Link to="/advice" className={`nav-item ${location.pathname === '/advice' ? 'active' : ''}`}>
+          Nutrition Advice
         </Link>
         <button className="login-btn">Login</button>
       </div>
