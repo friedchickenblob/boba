@@ -390,6 +390,11 @@ body {
 .capture-header {
   text-align: center;
   margin-bottom: 40px;
+  padding: 60px 20px; /* add some vertical space */
+  background: linear-gradient(to right, #ddfbc0, #eefaee);
+  border-radius: 20px; /* optional, makes it look like a card */
+  width: 100%; /* stretches across container */
+  box-sizing: border-box; /* ensures padding doesn't break layout */
 }
 
 .capture-header h1 {
@@ -416,6 +421,7 @@ body {
   border-radius: 25px;
   border: 1px solid #f3f4f6;
   box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  
 }
 
 .main-upload {
