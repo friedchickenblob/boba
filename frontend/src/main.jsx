@@ -7,6 +7,8 @@ import SearchFood from "./components/SearchFood";
 import LandingPage from "./components/LandingPage"; // This will hold Hero and Blocks
 import Navbar from "./components/Navbar";       // This will hold your Nav logic
 import './index.css'
+import Login from "./components/Login";
+
 
 function AppWrapper() {
   return (

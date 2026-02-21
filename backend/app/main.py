@@ -1,33 +1,78 @@
-from fastapi import FastAPI, UploadFile, File
+from dotenv import load_dotenv
+load_dotenv()
+
+from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.vision import detect_food
 from app.nutrition import get_nutrition
-from app.models import Base, FoodLog, ManualFoodEntry
+from app.models import Base, FoodLog, User, ManualFoodEntry
 from app.database import engine, SessionLocal
 from datetime import datetime, date,  timedelta
 from sqlalchemy import func
 from fastapi import Form
 import os
 from openai import OpenAI
+from app.auth.discord import router as discord_router
+
+
+from starlette.middleware.sessions import SessionMiddleware
 
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
 Base.metadata.create_all(bind=engine)
 
+
 app = FastAPI(title="Calorie AI Backend")
+
+app.add_middleware(SessionMiddleware, secret_key=os.environ["SESSION_SECRET"], same_site="lax")
 
 app.add_middleware(
     CORSMiddleware,
+    allow_credentials=True,
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+app.include_router(discord_router)
+
+@app.get("/auth/me")
+def get_current_user(request: Request):
+    user_id = request.session.get("user_id")
+
+    if not user_id:
+        return {"user": None}
+
+    db = SessionLocal()
+    user = db.query(User).filter(User.discord_id == user_id).first()
+    db.close()
+
+    if not user:
+        return {"user": None}
+
+    return {
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "avatar": user.avatar,
+        }
+    }
+
+@app.post("/auth/logout")
+def logout(request: Request):
+    request.session.clear()
+    return {"message": "logged out"}
+
+@app.get("/debug/users")
+def list_users(db):
+    return db.query(User).all()
+
 @app.post("/analyze")
 async def analyze_food(
     file: UploadFile = File(...), 
-    portion: str = Form("medium")  # Add this to handle the extra data
+    portion: str = Form("medium"),  # Add this to handle the extra data
+    request: Request = None
 ):
     result = await detect_food(file)
 
@@ -40,6 +85,14 @@ async def analyze_food(
     # ---- SAVE TO DATABASE ----
     if main_food != "unknown":
         db = SessionLocal()
+        # user = db.query(User).filter(User.discord_id == "435939911455997952").first()
+        user_id = request.session.get("user_id")
+        print("user id:", repr(user_id))
+        if user_id == None: return None
+        user = db.query(User).filter(User.discord_id == str(user_id)).first()
+        print("user", user)
+        if user == None: return None
+
 
         entry = FoodLog(
             food=main_food,
@@ -47,12 +100,20 @@ async def analyze_food(
             protein=nutrition["total"]["protein"],
             fat=nutrition["total"]["fat"],
             carbs=nutrition["total"]["carbs"],
-            timestamp=datetime.now()
+            timestamp=datetime.utcnow(),
+            user_id=user.discord_id   # associate with user
         )
 
         db.add(entry)
         db.commit()
         db.close()
+    print("gonna return", {
+        "food": main_food,
+        "components": components,
+        "portions": portions,
+        "nutrition": nutrition
+    }
+)
 
     return {
         "food": main_food,
@@ -167,31 +228,11 @@ def log_manual(data: dict): # Expecting food name and nutrition values
         carbs=data["carbs"],
         timestamp=datetime.now()
     )
-    db.add(log)
-    db.commit()
-    db.close()
-    return {"status": "success", "message": "Meal logged!"}
 
-@app.get("/summary/daily-log")
-def daily_log():
-    db = SessionLocal()
-    today = date.today()
-    
-    # Fetch all logs for today, ordered by newest first
-    logs = db.query(FoodLog).filter(
-        func.date(FoodLog.timestamp) == today
-    ).order_by(FoodLog.timestamp.desc()).all()
-    
-    db.close()
-    
-    return [
-        {
-            "id": log.id,
-            "food": log.food,
-            "calories": log.calories,
-            "protein": log.protein,
-            "fat": log.fat,
-            "carbs": log.carbs,
-            "time": log.timestamp.strftime("%H:%M") # Format time as HH:MM
-        } for log in logs
-    ]
+    try:
+        db.add(log)
+        db.commit()
+    finally:
+        db.close()
+
+    return {"status": "success", "message": "Meal logged!"}
