@@ -26,6 +26,10 @@ const Navbar = () => {
         <Link to="/advice" className={`nav-item ${location.pathname === '/advice' ? 'active' : ''}`}>
           Nutrition Advice
         </Link>
+        <Link to="/goals" className={`nav-item ${location.pathname === '/goals' ? 'active' : ''}`}>
+          Set Goals
+        </Link>
+
         <button className="login-btn">Login</button>
       </div>
     </nav>
