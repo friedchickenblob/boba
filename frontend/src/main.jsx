@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import CaptureFood from "./components/CaptureFood";
 import ManualEntry from "./components/ManualEntry";
+import Login from "./components/Login";
 
 function AppWrapper() {
   // This is the "global state" for all meals
@@ -26,5 +27,6 @@ function AppWrapper() {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AppWrapper />
+    <Login />
   </BrowserRouter>
 );

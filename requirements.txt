@@ -6,3 +6,5 @@ python-dotenv
 openai
 pillow
 sqlalchemy
+httpx
+python-jose

@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from app.vision import detect_food
@@ -7,6 +10,7 @@ from app.database import engine, SessionLocal
 from datetime import datetime, date,  timedelta
 from sqlalchemy import func
 from fastapi import Form
+from app.auth.discord import router as discord_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -18,6 +22,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(discord_router)
+
+@app.get("/debug/users")
+def list_users(db):
+    return db.query(User).all()
 
 @app.post("/analyze")
 async def analyze_food(
