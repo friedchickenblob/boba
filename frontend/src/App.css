@@ -1,8 +1,11 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  margin: 0;
+  overflow-x: hidden;
 }
 
 .logo {
@@ -67,6 +70,14 @@ body {
   text-decoration: none;
 }
 
+.feature-icon {
+  width: 50px;   /* smaller width */
+  height: 50px;  /* smaller height */
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
 .nav-links {
   display: flex;
   gap: 30px;
@@ -109,15 +120,16 @@ body {
 .hero-section {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 80px 10%;
-  background: linear-gradient(to right, #ffffff, #f7faf7);
+  justify-content: center;   /* <-- center whole layout */
+  background: linear-gradient(to right, #ddfbc0, #eefaee);
   min-height: 500px;
+  width: 100%;
+  padding: 80px 40px;        /* <-- fixed padding, not % */
+  gap: 60px;                 /* <-- proper spacing between text & image */
 }
 
 .hero-content {
-  flex: 1;
-  max-width: 600px;
+  flex: 0 1 600px;   /* do NOT stretch infinitely */
   text-align: left;
 }
 
@@ -163,6 +175,12 @@ body {
   justify-content: flex-end;
 }
 
+.hero-image-container {
+  flex: 0 1 500px;   /* limit image container */
+  display: flex;
+  justify-content: center;  /* not flex-end */
+}
+
 .hero-image {
   width: 100%;
   max-width: 500px;
@@ -186,6 +204,7 @@ body {
   text-align: center;
   transition: all 0.3s ease;
   border: 1px solid transparent;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
 .feature-card:hover {
@@ -218,10 +237,10 @@ body {
 }
 
 /* Card Colors from Image */
-.card-summary { background-color: #d9f2d1; } /* Pastel Green */
-.card-scan    { background-color: #d1ebf2; } /* Pastel Blue */
-.card-advice  { background-color: #f2f0d1; } /* Pastel Yellow */
-.card-manual  { background-color: #f9d1f2; } /* Pastel Pink */
+.card-summary { background: linear-gradient(to right, #d2faad, #c4f3c4); } /* Pastel Green */
+.card-scan    { background: linear-gradient(to right, #b4dffd, #cfeefa); } /* Pastel Blue */
+.card-advice  { background: linear-gradient(to right, #fce7a9, #fbf1d2); } /* Pastel Yellow */
+.card-manual  { background: linear-gradient(to right, #f3bae8, #fadef1); } /* Pastel Pink */
 
 /* Dashboard Layout */
 .dashboard-wrapper {
