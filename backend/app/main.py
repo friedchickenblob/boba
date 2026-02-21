@@ -110,6 +110,7 @@ async def analyze_food(
             fat=nutrition["total"]["fat"],
             carbs=nutrition["total"]["carbs"],
             timestamp=datetime.utcnow(),
+            # timestamp=datetime.now(),
             user_id=user.discord_id   # associate with user
         )
 
@@ -132,8 +133,15 @@ async def analyze_food(
     }
 @app.get("/summary/daily")
 def daily_summary(request: Request):
+
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     db = SessionLocal()
-    today = date.today()
+    today = datetime.utcnow().date()
+    start = datetime.combine(today, datetime.min.time())
+    end = start + timedelta(days=1)
     print("what is sesion user id", str(request.session.get("user_id")))
 
     result = db.query(
@@ -142,8 +150,12 @@ def daily_summary(request: Request):
         func.sum(FoodLog.fat).label("fat"),
         func.sum(FoodLog.carbs).label("carbs")
     ).filter(
-        func.date(FoodLog.timestamp) == today,
-        FoodLog.user_id == str(request.session.get("user_id"))
+        # func.date(FoodLog.timestamp) == today,
+        # func.date(FoodLog.timestamp) == '2026-02-21'
+        # FoodLog.user_id == str(request.session.get("user_id"))
+        FoodLog.timestamp >= start,
+        FoodLog.timestamp < end,
+        FoodLog.user_id == str(user_id)
     ).first()
 
     db.close()
@@ -160,9 +172,17 @@ def daily_summary(request: Request):
 
 @app.get("/summary/weekly")
 def weekly_summary(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     db = SessionLocal()
-    today = date.today()
-    week_start = today - timedelta(days=7)
+
+    today = datetime.utcnow().date()
+    week_start = today - timedelta(days=6)
+
+    start = datetime.combine(week_start, datetime.min.time())
+    end = datetime.combine(today + timedelta(days=1), datetime.min.time())
 
     result = db.query(
         func.sum(FoodLog.calories).label("calories"),
@@ -170,8 +190,9 @@ def weekly_summary(request: Request):
         func.sum(FoodLog.fat).label("fat"),
         func.sum(FoodLog.carbs).label("carbs")
     ).filter(
-        FoodLog.timestamp >= week_start,
-        FoodLog.user_id == str(request.session.get("user_id"))
+        FoodLog.timestamp >= start,
+        FoodLog.timestamp < end,
+        FoodLog.user_id == str(user_id)
     ).first()
 
     db.close()
@@ -186,6 +207,7 @@ def weekly_summary(request: Request):
             "carbs": round(result.carbs or 0, 2),
         }
     }
+
 
 @app.get("/summary/weekly-breakdown")
 def weekly_breakdown():
