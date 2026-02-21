@@ -6,11 +6,11 @@ from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.vision import detect_food
 from app.nutrition import get_nutrition
-from app.models import Base, FoodLog, User, ManualFoodEntry
+from app.models import Base, FoodLog, User, ManualFoodEntry, UserGoal
 from app.database import engine, SessionLocal
 from datetime import datetime, date,  timedelta
 from sqlalchemy import func
-from fastapi import Form
+from fastapi import Form, Body
 import os
 from openai import OpenAI
 
@@ -20,6 +20,7 @@ from fastapi.responses import RedirectResponse
 
 
 from starlette.middleware.sessions import SessionMiddleware
+
 
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
@@ -315,3 +316,57 @@ async def chat_endpoint(request: ChatRequest):
 
 #     except Exception as e:
 #         return {"reply": f"Sorry, something went wrong: {str(e)}"}
+@app.get("/summary/daily-log")
+def daily_log():
+    db = SessionLocal()
+    today = date.today()
+    
+    # Fetch all logs for today, ordered by newest first
+    logs = db.query(FoodLog).filter(
+        func.date(FoodLog.timestamp) == today
+    ).order_by(FoodLog.timestamp.desc()).all()
+    
+    db.close()
+    
+    return [
+        {
+            "id": log.id,
+            "food": log.food,
+            "calories": log.calories,
+            "protein": log.protein,
+            "fat": log.fat,
+            "carbs": log.carbs,
+            "time": log.timestamp.strftime("%H:%M") # Format time as HH:MM
+        } for log in logs
+    ]
+
+@app.get("/goals/daily")
+def get_daily_goals():
+    db = SessionLocal()
+    goal = db.query(UserGoal).first()  # single user scenario
+    db.close()
+    if goal:
+        return {
+            "calories": goal.calories,
+            "protein": goal.protein,
+            "carbs": goal.carbs,
+            "fat": goal.fat,
+        }
+    return {"calories": 2000, "protein": 100, "carbs": 200, "fat": 70}  # default
+
+@app.post("/goals/daily")
+def set_daily_goals(data: dict = Body(...)):
+    db = SessionLocal()
+    goal = db.query(UserGoal).first()
+    if not goal:
+        goal = UserGoal()
+        db.add(goal)
+    goal.calories = data.get("calories", goal.calories)
+    goal.protein = data.get("protein", goal.protein)
+    goal.carbs = data.get("carbs", goal.carbs)
+    goal.fat = data.get("fat", goal.fat)
+    db.commit()
+    db.close()
+    return {"status": "success", "goal": data}
+
+

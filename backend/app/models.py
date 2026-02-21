@@ -36,3 +36,11 @@ class User(Base):
 class ManualFoodEntry(BaseModel):
     food: str
     portion: str = "medium"
+
+class UserGoal(Base):
+    __tablename__ = "user_goals"
+    id = Column(Integer, primary_key=True, index=True)
+    calories = Column(Integer, default=2000)
+    protein = Column(Integer, default=100)
+    carbs = Column(Integer, default=200)
+    fat = Column(Integer, default=70)

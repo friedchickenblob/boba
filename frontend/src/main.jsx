@@ -9,6 +9,8 @@ import Navbar from "./components/Navbar";       // This will hold your Nav logic
 import AiAdvice from "./components/AiAdvice";
 import './index.css';
 
+import Goals from "./components/Goals";
+import './index.css'
 
 function AppWrapper() {
   return (
@@ -19,7 +21,12 @@ function AppWrapper() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/capture" element={<CaptureFood />} />
         <Route path="/manual" element={<SearchFood />} />
-        <Route path="/advice" element={<AiAdvice />} />
+        <Route path="/goals" element={<Goals />} />
+        <Route path="/advice" element={
+          <div className="p-20 text-center text-2xl font-bold">
+            AI Nutrition Advice Coming Soon...
+          </div>
+        } />
       </Routes>
     </div>
   );

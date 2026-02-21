@@ -17,12 +17,45 @@ function MacroCard({ label, value, unit, className, icon }) {
   );
 }
 
+
+function ProgressBar({ label, value, goal, unit, color }) {
+  const percentage = goal > 0 ? Math.min((value / goal) * 100, 100) : 0;
+  const isOver = value > goal;
+
+  return (
+    <div className="progress-bar-wrapper">
+      <div className="progress-label">
+        <span>{label}</span>
+        <span>{value}/{goal} {unit}</span>
+      </div>
+
+      <div className="progress-bar">
+        <div
+          className="progress-fill"
+          style={{
+            width: `${percentage}%`,
+            backgroundColor: isOver ? "#ef4444" : color
+          }}
+        />
+      </div>
+
+      {isOver && (
+        <div className="over-warning">
+          ⚠ Exceeded target
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [view, setView] = useState("daily"); 
   const [summary, setSummary] = useState(null);
   const [weeklyData, setWeeklyData] = useState(null);
   const [dailyItems, setDailyItems] = useState([]);
+  const [goals, setGoals] = useState(null);
+  const [goalsLoaded, setGoalsLoaded] = useState(false);
   
   const today = new Date().toLocaleDateString('en-US', { 
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
@@ -47,6 +80,22 @@ export default function Dashboard() {
       }
     };
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchGoals = async () => {
+      const res = await fetch("http://localhost:8000/goals/daily");
+      const data = await res.json();
+
+      if (data?.calories && data.calories > 0) {
+        setGoals(data);
+      } else {
+        setGoals(null);
+      }
+
+      setGoalsLoaded(true);
+    };
+    fetchGoals();
   }, []);
 
   if (!summary) return (
@@ -75,7 +124,38 @@ export default function Dashboard() {
         <p className="date-display">{view === "daily" ? today : "Past 7 Days"}</p>
       </header>
 
+      {!goalsLoaded ? (
+        <p>Loading goals...</p>
+      ) : goals ? (
+        <section className="progress-section">
+          <h2>Your Progress</h2>
+          <ProgressBar label="Calories" value={summary.calories} goal={goals.calories} unit="kcal" color="#16a34a" />
+          <ProgressBar label="Protein" value={summary.protein} goal={goals.protein} unit="g" color="#f97316" />
+          <ProgressBar label="Carbs" value={summary.carbs} goal={goals.carbs} unit="g" color="#3b82f6" />
+          <ProgressBar label="Fat" value={summary.fat} goal={goals.fat} unit="g" color="#ef4444" />
+          <button 
+            className="btn-secondary1"
+            onClick={() => navigate("/goals")}
+          >
+            Edit Goals
+          </button>
+        </section>
+      ) : (
+        <div className="no-goals-card">
+          <h3>No Goals Set Yet</h3>
+          <p>Set your daily nutrition targets to track progress.</p>
+          <button
+            className="btn-primary"
+            onClick={() => navigate("/goals")}
+          >
+            Set Goals
+          </button>
+        </div>
+      )}
+
+
       {view === "daily" ? (
+        
         <div className="animate-fade">
           <div className="energy-card">
             <div className="energy-info">

@@ -58,7 +58,7 @@ function SearchFood() {
   return (
     <div className="search-container">
       <header className="search-header">
-        <h1>🔍 Manual Food Entry</h1>
+        <h1>Manual Food Entry</h1>
         <p>Search for specific items and portion sizes to log your meals.</p>
       </header>
 

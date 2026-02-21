@@ -5,6 +5,7 @@ import summaryIcon from "../assets/summary.png";
 import scanIcon from "../assets/scan.png";
 import adviceIcon from "../assets/advice.png";
 import searchIcon from "../assets/search.png";
+import goalsIcon from "../assets/target.png";
 
 export default function LandingPage() {
   const [user, setUser] = useState(null);
@@ -85,6 +86,15 @@ export default function LandingPage() {
           desc="Search for food calories" 
           className="card-manual" 
         />
+
+        <FeatureBlock 
+          link="/goals" 
+          icon={<img src={goalsIcon} alt="Set Goals" className="feature-icon" />} 
+          title="Set Goals" 
+          desc="Set Daily Goals" 
+          className="card-goals" 
+        />
+
       </section>
       </div>
     </>
