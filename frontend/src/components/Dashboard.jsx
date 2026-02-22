@@ -54,11 +54,11 @@ function WeeklyCalendar() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const resTotal = await fetch("http://localhost:8000/summary/weekly", { credentials: "include" });
+      const resTotal = await fetch("https://web-production-2a2a3.up.railway.app/summary/weekly", { credentials: "include" });
       const dataTotal = await resTotal.json();
       setWeeklyData(dataTotal.totals);
 
-      const resDots = await fetch("http://localhost:8000/summary/weekly-breakdown", { credentials: "include" });
+      const resDots = await fetch("https://web-production-2a2a3.up.railway.app/summary/weekly-breakdown", { credentials: "include" });
       const dataDots = await resDots.json();
       console.log("BACKEND DATA:", dataDots); // Check if 'day' strings match your 'last7Days'
       setBreakdown(dataDots);

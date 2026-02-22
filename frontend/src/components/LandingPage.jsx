@@ -25,7 +25,7 @@ export default function LandingPage() {
 
   // Change your fetch to handle the data better
   useEffect(() => {
-    fetch("http://localhost:8000/achievements", { credentials: "include" })
+    fetch("https://web-production-2a2a3.up.railway.app/achievements", { credentials: "include" })
       .then(res => res.json())
       .then(data => {
         console.log("Achievement Data:", data);

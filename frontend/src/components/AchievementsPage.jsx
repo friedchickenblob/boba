@@ -21,7 +21,7 @@ export default function AchievementsPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch("http://localhost:8000/achievements/full", {
+      const res = await fetch("https://web-production-2a2a3.up.railway.app/achievements/full", {
         credentials: "include"
       });
       const data = await res.json();
