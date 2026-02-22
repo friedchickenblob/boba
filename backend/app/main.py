@@ -498,6 +498,7 @@ def get_achievements(request: Request):
         goal = UserGoal(user_id=str(user_id), calories=2000, protein=100, carbs=200, fat=70)
         db.add(goal)
         db.commit()
+        db.refresh(goal)
 
     logs = db.query(FoodLog.timestamp, FoodLog.calories, FoodLog.protein)\
              .filter(FoodLog.user_id == str(user_id), FoodLog.timestamp >= today - timedelta(days=30))\
