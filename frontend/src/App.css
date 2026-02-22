@@ -603,7 +603,7 @@ body {
   align-items: start;
 }
 
-/* If mobile, stack them */
+
 @media (max-width: 900px) {
   .capture-layout { grid-template-columns: 1fr; }
 }
@@ -614,7 +614,7 @@ body {
   border-radius: 25px;
   border: 1px solid #f3f4f6;
   box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-  
+  background-color: rgba(170, 233, 136, 0.7);
 }
 
 .main-upload {
@@ -623,10 +623,10 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 2px dashed #e5e7eb; /* Gives it that "upload zone" look */
+  border: 2px dashed #e5e7eb; 
 }
 
-/* Mini Stats on Sidebar */
+
 .totals-card h3 {
   margin-top: 0;
   font-size: 1.1rem;
@@ -679,7 +679,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f9fafb;
+  background-color: #eff3dd;
   margin-bottom: 25px;
   transition: border-color 0.3s;
   overflow: hidden;
@@ -694,6 +694,45 @@ body {
 }
 
 .upload-icon { font-size: 3rem; margin-bottom: 10px; }
+
+.clickable-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.clickable-zone:hover {
+  transform: translateY(-3px); 
+}
+
+.upload-asset-img {
+  width: 60px;  /* Adjust size as needed */
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+.upload-text {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #374151;
+  transition: all 0.3s ease;
+}
+
+.clickable-zone:hover .upload-text {
+  color: #22c55e; /* Bright Green */
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.4); /* Subtle green glow */
+}
+
+.divider {
+  font-weight: 1000;
+  color: #0a5a1959;
+  margin: 20px 0;
+}
 
 .image-preview {
   width: 100%;
@@ -958,27 +997,49 @@ body {
 .week-stat span { font-size: 0.8rem; color: #9ca3af; }
 
 .calendar-row {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
   margin-top: 15px;
 }
 
 .calendar-day-card {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  padding: 20px 10px;
-  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  transition: all 0.2s;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 12px;
+  transition: background 0.2s;
+  flex: 1;
 }
 
 .calendar-day-card:hover {
-  border-color: #16a34a;
-  background: #f0fdf4;
+  background: #f3f4f6;
+}
+
+.calendar-day-card.active {
+  background: #eff6ff;
+  border: 1px solid #3b82f6;
+}
+
+.day-dot.green {
+  background-color: #22c55e; /* Green for data */
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+
+.day-dot.gray {
+  background-color: #e5e7eb; /* Gray for empty */
+}
+
+/* Mini detail card */
+.day-details-mini {
+  margin-top: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 15px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
 }
 
 .day-name {
@@ -1036,12 +1097,6 @@ body {
   flex-direction: row;
   align-items: center;
   gap: 30px;
-}
-
-.divider {
-  font-weight: 800;
-  color: #9ca3af;
-  font-size: 0.8rem;
 }
 
 .camera-toggle-btn {
@@ -1344,6 +1399,11 @@ body {
 .advice-header {
   text-align: center;
   margin-bottom: 40px;
+  padding: 60px 30px; /* add some vertical space */
+  background: linear-gradient(to right, #ddfbc0, #eefaee);
+  border-radius: 20px; /* optional, makes it look like a card */
+  width: 100%; /* stretches across container */
+  box-sizing: border-box; /* ensures padding doesn't break layout */
 }
 
 .advice-header h1 {

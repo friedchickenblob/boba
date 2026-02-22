@@ -2,6 +2,8 @@ import { useState, useRef, useCallback } from "react";
 import Webcam from "react-webcam";
 import { analyzeFood } from "../api/client";
 import "../App.css";
+import folderImg from "../assets/upload.png";
+import cameraImg from "../assets/photo.png";
 
 function Upload({ onResult }) {
   const [file, setFile] = useState(null);
@@ -70,14 +72,16 @@ function Upload({ onResult }) {
           </div>
         ) : (
           <div className="upload-options">
-            <label className="file-label">
-              <span className="upload-icon">📁</span>
+            <label className="file-label clickable-zone">
+              <img src={folderImg} alt="Upload" className="upload-asset-img" />
               <span className="upload-text">Upload Image</span>
               <input type="file" accept="image/*" onChange={handleFileChange} hidden />
             </label>
+            
             <div className="divider">OR</div>
-            <button className="camera-toggle-btn" onClick={() => setIsCameraOpen(true)}>
-              <span className="upload-icon">📷</span>
+            
+            <button className="camera-toggle-btn clickable-zone" onClick={() => setIsCameraOpen(true)}>
+              <img src={cameraImg} alt="Camera" className="upload-asset-img" />
               <span className="upload-text">Use Camera</span>
             </button>
           </div>
