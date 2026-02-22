@@ -11,6 +11,7 @@ import {
   Filler
 } from "chart.js";
 import fireIcon from "../assets/fire.png";
+import mealIcon from "../assets/achive.jpg";
 import "../App.css";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
@@ -78,8 +79,16 @@ export default function AchievementsPage() {
   return (
     <div className="achieve-container">
       <header className="achieve-header">
-        <h1 className="achieve-main-title">Achievements</h1>
-        <p className="achieve-subtitle">Your weekly Streaks and Progress</p>
+              <div className="header-text">
+                    <h1>Achievements</h1>
+                    <p>Your weekly Streaks and Progress</p>
+              </div>    
+              <div className="header-image-box">
+                            <img src={mealIcon} alt="Meal Illustration" className="small-header-img" />
+                        <div className="image-source">
+                          Photo by <a href="https://www.drsumitz.com/blogs/top-10-nutrition-tips-for-a-healthier-lifestyle" target="_blank" rel="noreferrer">drsumitz</a>
+                        </div>  
+            </div>
       </header>
 
       {/* Cards with Dynamic Labels */}

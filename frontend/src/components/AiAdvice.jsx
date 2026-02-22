@@ -4,6 +4,7 @@ import "../App.css";
 import examImg from "../assets/cramming.jpg";
 import fluImg from "../assets/flu.jpg";
 import crampsImg from "../assets/cramp.jpg";
+import mealIcon from "../assets/advice.jpg";
 
 export default function AiAdvice() {
   const [summary, setSummary] = useState(null);
@@ -68,8 +69,16 @@ export default function AiAdvice() {
   return (
     <div className="advice-page-container">
       <header className="advice-header">
-        <h1>AI Nutrition Advice</h1>
-        <p>Your personalized assistant is ready to help you hit your goals.</p>
+        <div className="header-text">
+                            <h1>AI Nutrition Advice</h1>
+                            <p>Your personalized assistant is ready to help you hit your goals.</p>
+                      </div>    
+                      <div className="header-image-box">
+                                    <img src={mealIcon} alt="Meal Illustration" className="small-header-img" />
+                                <div className="image-source">
+                                  Photo by <a href="https://www.healingtouchcentre.com/latest-update/diet-and-nutrition-course-in-mumbai-located-in-the/22" target="_blank" rel="noreferrer">healing touch centre</a>
+                                </div>  
+                    </div>
       </header>
 
       <div className="advice-layout">

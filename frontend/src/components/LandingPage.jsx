@@ -7,7 +7,7 @@ import adviceIcon from "../assets/advice.png";
 import searchIcon from "../assets/search.png";
 import goalsIcon from "../assets/target.png";
 import achievementsIcon from "../assets/badge.png";
-
+import aboutImg from "../assets/achive.jpg";
 
 export default function LandingPage() {
   const [user, setUser] = useState(null);
@@ -155,6 +155,69 @@ export default function LandingPage() {
           className="card-achievements" 
         />
 
+      </section>
+
+      <section className="about-section">
+        <div className="about-container">
+          
+          <div className="about-content">
+            <span className="about-tag">OUR MISSION</span>
+            <h2 className="about-title">Your Daily Partner in Nutrition and Wellness</h2>
+            <p className="about-description">
+              Our aim is to help students and health enthusiasts navigate their nutrition with comfort. 
+              We provide the tools you need to build better habits without the stress of manual calculations. 
+              With BobaScan AI, you can focus on enjoying your meals while we take care of the rest.
+            </p>
+
+            <div className="capability-list">
+              <div className="capability-item">
+                <div className="cap-icon">💪🏻</div>
+                <div className="cap-text">
+                  <h3>Quick Calorie Check</h3>
+                  <p>Instant identification of food calories using AI-powered image recognition.</p>
+                </div>
+              </div>
+
+              <div className="capability-item">
+                <div className="cap-icon">💪🏻</div>
+                <div className="cap-text">
+                  <h3>Smart Logging</h3>
+                  <p>Automatically log consumption into your calendar to track long-term goals.</p>
+                </div>
+              </div>
+
+              <div className="capability-item">
+                <div className="cap-icon">💪🏻</div>
+                <div className="cap-text">
+                  <h3>AI Nutrition Coach</h3>
+                  <p>Chat with our AI assistant for instant health tips and personalized meal advice.</p>
+                </div>
+              </div>
+
+              <div className="capability-item">
+                <div className="cap-icon">💪🏻</div>
+                <div className="cap-text">
+                  <h3>Motivation Streaks</h3>
+                  <p>Keep your momentum motivation with daily streaks and achievement tracking.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="disclaimer-box">
+              <p>
+                <strong>Note:</strong> We provide smart estimations to promote nutritional awareness. While not 100% absolute, it’s a powerful guide for a healthier you.
+              </p>
+            </div>
+          </div>
+
+          <div className="about-image-wrapper">
+            <img src={aboutImg} alt="Healthy lifestyle" className="about-main-img" />
+            <div className="floating-card">
+              <span>85% Better Focus</span>
+            </div>
+          </div>
+
+        </div>
       </section>
     </div>
   );
