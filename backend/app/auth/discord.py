@@ -74,8 +74,13 @@ async def discord_callback(code: str, request: Request):
         db.commit()
         db.refresh(user)
 
+    response = RedirectResponse(
+    url="https://boba-liard.vercel.app/",
+    status_code=302,
+)
+
     print("this is discord id", discord_user["id"])
     request.session["user_id"] = discord_user["id"]
     db.close()
     # return {"message": "User saved", "user": {"id": user.id, "username": user.username}}
-    return RedirectResponse(url=f"https://boba-liard.vercel.app/")
+    return response

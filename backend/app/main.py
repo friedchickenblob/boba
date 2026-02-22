@@ -31,7 +31,12 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Calorie AI Backend")
 
-app.add_middleware(SessionMiddleware, secret_key=os.environ["SESSION_SECRET"], same_site="lax")
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET"),
+    same_site="none",   # REQUIRED for Vercel → Railway
+    https_only=True,    # REQUIRED for secure cookies
+)
 
 origins = [
     "https://boba-liard.vercel.app",  # your frontend URL
