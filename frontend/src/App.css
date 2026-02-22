@@ -598,6 +598,58 @@ body {
   font-weight: 700;
 }
 
+/* Media Query for Tablets and Phones */
+@media (max-width: 768px) {
+  .goals-header1 {
+    flex-direction: column; /* Stack text and image */
+    text-align: center;
+    padding: 30px 20px;
+    gap: 20px;
+  }
+
+  .goals-header1 h1 {
+    font-size: 2rem;
+  }
+
+  /* The actual Goal Card */
+  .goals-card.modern {
+    padding: 24px 16px; /* Narrower padding for small screens */
+    margin-top: 20px;
+    border-radius: 16px;
+  }
+
+  /* Inner Header (Title + Edit Button) */
+  .goals-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .goals-header h3 {
+    font-size: 1.2rem;
+  }
+
+  /* If you have a grid of inputs (e.g., Protein, Carbs, Fats) */
+  .goals-grid {
+    grid-template-columns: 1fr; /* Stack inputs vertically */
+    gap: 15px;
+  }
+}
+
+/* Extra Small Phones */
+@media (max-width: 480px) {
+  .goals-container {
+    padding: 20px 10px;
+  }
+
+  .goals-header1 h1 {
+    font-size: 1.7rem;
+  }
+  
+  .goals-card.modern {
+    padding: 20px 12px;
+  }
+}
 .saved-badge {
   background: #dcfce7;
   color: #16a34a;
@@ -1016,7 +1068,7 @@ body {
   background: #f3f4f6;
   color: #6b7280;
 }
-/* Search Page Layout */
+
 .search-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -1055,6 +1107,50 @@ body {
 .search-input-group {
   display: flex;
   gap: 15px;
+}
+
+/* Media Query for Tablets and Phones */
+@media (max-width: 768px) {
+  .search-header {
+    flex-direction: column; /* Stack text and image */
+    text-align: center;
+    padding: 30px 20px;
+    gap: 20px;
+  }
+
+  .search-header h1 {
+    font-size: 2rem;
+  }
+
+  .search-card {
+    padding: 20px; 
+    border-radius: 20px;
+  }
+
+  .search-input-group {
+    flex-direction: column; 
+    gap: 12px;
+  }
+
+  .search-input-group input {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .search-input-group button {
+    width: 100%; 
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container {
+    padding: 20px 10px;
+  }
+
+  .search-header h1 {
+    font-size: 1.7rem;
+  }
 }
 
 .custom-input {
@@ -1404,7 +1500,7 @@ body {
 }
 
 .welcome-text {
-  font-size: 1.5rem; /* Large size */
+  font-size: 2rem; /* Large size */
   font-weight: 800;
   color: #1f2937;
   letter-spacing: -1px;
@@ -1647,6 +1743,45 @@ body {
   grid-template-columns: 350px 1fr;
   gap: 30px;
   align-items: start;
+}
+/* Media Query for Tablets and Phones */
+@media (max-width: 1024px) {
+  .advice-layout {
+    grid-template-columns: 1fr; /* Stack the sidebar and main content */
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .advice-header {
+    flex-direction: column; /* Stack header text and image */
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .advice-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .advice-header p {
+    font-size: 1rem;
+  }
+
+  .advice-page-container {
+    padding: 20px 15px;
+  }
+}
+
+/* Extra Small Phones */
+@media (max-width: 480px) {
+  .advice-header h1 {
+    font-size: 1.8rem;
+  }
+
+  /* If you have cards inside the advice section, ensure they use full width */
+  .advice-card {
+    padding: 15px;
+  }
 }
 
 /* Context Card Styles */
@@ -2140,18 +2275,6 @@ body {
   position: relative;
 }
 
-.floating-card {
-  position: absolute;
-  bottom: 10px;
-  left: 0px;
-  background: white;
-  padding: 15px 25px;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  font-weight: 700;
-  color: #16a34a;
-  animation: float 3s ease-in-out infinite;
-}
 
 @keyframes float {
   0% { transform: translateY(0px); }
@@ -2159,7 +2282,6 @@ body {
   100% { transform: translateY(0px); }
 }
 
-/* Mobile Responsive */
 @media (max-width: 968px) {
   .about-container {
     flex-direction: column;
@@ -2172,6 +2294,26 @@ body {
     font-size: 2.2rem;
   }
   .about-image-wrapper {
-    order: -1; /* Image appears first on mobile */
+    order: -1; 
   }
+}
+.nav-logo {
+  display: flex;       
+  align-items: center;   
+  gap: 10px;            
+  font-size: 30px;
+  font-weight: 800;
+  color: #2d5a27;
+  text-decoration: none;
+}
+
+.nav-icon {
+  width: 40px;          
+  height: 40px;
+  object-fit: contain;   
+}
+
+.nav-logo:hover .nav-icon {
+  transform: rotate(-10deg);
+  transition: transform 0.2s ease;
 }
