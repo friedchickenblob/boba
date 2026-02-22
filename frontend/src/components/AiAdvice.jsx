@@ -8,7 +8,7 @@ export default function AiAdvice() {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const res = await fetch("https://boba-production-751f.up.railway.app/summary/daily", {
+        const res = await fetch("https://web-production-2a2a3.up.railway.app/summary/daily", {
           credentials: "include", // Required for your session-based auth
         });
         const data = await res.json();

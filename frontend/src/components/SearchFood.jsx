@@ -13,7 +13,7 @@ function SearchFood() {
     if (!food) return;
     setLoading(true);
     try {
-      const res = await fetch("https://boba-production-751f.up.railway.app/analyze-manual", {
+      const res = await fetch("https://web-production-2a2a3.up.railway.app/analyze-manual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ food, portion }),
@@ -34,7 +34,7 @@ function SearchFood() {
   // Step 2: Confirm and Save to Database
   const handleConfirmLog = async () => {
     try {
-      const res = await fetch("https://boba-production-751f.up.railway.app/log-manual", {
+      const res = await fetch("https://web-production-2a2a3.up.railway.app/log-manual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

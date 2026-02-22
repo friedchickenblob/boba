@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "../App.css";
 
 const login = () => {
-  window.location.href = "https://boba-production-751f.up.railway.app/auth/discord/login";
+  window.location.href = "https://web-production-2a2a3.up.railway.app/auth/discord/login";
 };
 
 const Navbar = () => {
@@ -12,7 +12,7 @@ const Navbar = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  fetch("https://boba-production-751f.up.railway.app/auth/me", {
+  fetch("https://web-production-2a2a3.up.railway.app/auth/me", {
     credentials: "include",
   })
     .then(res => res.json())
@@ -24,7 +24,7 @@ const Navbar = () => {
 }, []);
 
   const logout = async () => {
-    await fetch("https://boba-production-751f.up.railway.app/auth/logout", {
+    await fetch("https://web-production-2a2a3.up.railway.app/auth/logout", {
       method: "POST",
       credentials: "include",
     });

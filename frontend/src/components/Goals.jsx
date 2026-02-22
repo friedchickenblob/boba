@@ -37,7 +37,7 @@ function GoalsCard({ goals, setGoals, summary }) {
     try {
         setSaving(true);
 
-        const res = await fetch("https://boba-production-751f.up.railway.app/goals/daily", {
+        const res = await fetch("https://web-production-2a2a3.up.railway.app/goals/daily", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(localGoals),
@@ -133,7 +133,7 @@ export default function Goals() {
 
   useEffect(() => {
     const fetchGoals = async () => {
-      const res = await fetch("https://boba-production-751f.up.railway.app/goals/daily");
+      const res = await fetch("https://web-production-2a2a3.up.railway.app/goals/daily", { credentials: "include" });
       const data = await res.json();
       setGoals(data);
     };
