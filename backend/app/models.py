@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, Boolean, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, Boolean, String, DateTime, BigInteger, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -18,7 +18,7 @@ class FoodLog(Base):
     fat = Column(Float)
     carbs = Column(Float)
 
-    user_id = Column(String, ForeignKey("users.discord_id"))
+    user_id = Column(BigInteger, ForeignKey("users.id"))
     user = relationship("User", back_populates="food_logs")
 
 
