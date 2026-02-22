@@ -138,27 +138,40 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dailyRes = await fetch("http://localhost:8000/summary/daily", { credentials: "include" });
+        // 1️⃣ Fetch daily summary (NOT goals)
+        const dailyRes = await fetch("http://localhost:8000/summary/daily", {
+          credentials: "include"
+        });
         const dailyData = await dailyRes.json();
         setSummary(dailyData.totals);
 
-        const logRes = await fetch("http://localhost:8000/summary/daily-log", { credentials: "include" });
+        // 2️⃣ Fetch daily log
+        const logRes = await fetch("http://localhost:8000/summary/daily-log", {
+          credentials: "include"
+        });
         const logData = await logRes.json();
         setDailyItems(logData);
 
-        const weeklyRes = await fetch("http://localhost:8000/summary/weekly", { credentials: "include" });
+        // 3️⃣ Fetch weekly summary
+        const weeklyRes = await fetch("http://localhost:8000/summary/weekly", {
+          credentials: "include"
+        });
         const weeklyData = await weeklyRes.json();
         setWeeklyData(weeklyData.totals);
+
       } catch (err) {
         console.error("Dashboard Fetch Error:", err);
       }
     };
+
     fetchData();
   }, []);
 
   useEffect(() => {
     const fetchGoals = async () => {
-      const res = await fetch("http://localhost:8000/goals/daily");
+      const res = await fetch("http://localhost:8000/goals/daily", {
+        credentials: "include"
+      });
       const data = await res.json();
 
       if (data?.calories && data.calories > 0) {

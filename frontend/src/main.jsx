@@ -24,11 +24,7 @@ function AppWrapper() {
         <Route path="/manual" element={<SearchFood />} />
         <Route path="/goals" element={<Goals />} />
         <Route path="/achievements/full" element={<AchievementsPage />} />
-        <Route path="/advice" element={
-          <div className="p-20 text-center text-2xl font-bold">
-            AI Nutrition Advice Coming Soon...
-          </div>
-        } />
+        <Route path="/advice" element={<AiAdvice />} />
       </Routes>
     </div>
   );

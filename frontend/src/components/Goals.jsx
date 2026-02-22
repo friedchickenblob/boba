@@ -38,9 +38,10 @@ function GoalsCard({ goals, setGoals, summary }) {
         setSaving(true);
 
         const res = await fetch("http://localhost:8000/goals/daily", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(localGoals)
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",   // 🔥 REQUIRED
+          body: JSON.stringify(localGoals)
         });
 
         if (!res.ok) throw new Error("Failed to save");
@@ -132,7 +133,9 @@ export default function Goals() {
 
   useEffect(() => {
     const fetchGoals = async () => {
-      const res = await fetch("http://localhost:8000/goals/daily");
+      const res = await fetch("http://localhost:8000/goals/daily", {
+        credentials: "include"
+      });
       const data = await res.json();
       setGoals(data);
     };

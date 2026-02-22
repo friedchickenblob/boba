@@ -375,44 +375,78 @@ def daily_log(request: Request):
 @app.get("/goals/daily")
 def get_daily_goals(request: Request):
     user_id = request.session.get("user_id")
+
+    # If not logged in → return defaults
     if not user_id:
-        return {"calories": 2000, "protein": 100, "carbs": 200, "fat": 70}
+        return {
+            "calories": 2000,
+            "protein": 100,
+            "carbs": 200,
+            "fat": 70
+        }
 
     db = SessionLocal()
-    goal = db.query(UserGoal).filter(UserGoal.user_id == str(user_id)).first()
-    db.close()
+    try:
+        goal = db.query(UserGoal).filter(
+            UserGoal.user_id == str(user_id)
+        ).first()
 
-    if goal:
+        if goal:
+            return {
+                "calories": goal.calories,
+                "protein": goal.protein,
+                "carbs": goal.carbs,
+                "fat": goal.fat,
+            }
+
+        # No goal in DB → return defaults
         return {
-            "calories": goal.calories,
-            "protein": goal.protein,
-            "carbs": goal.carbs,
-            "fat": goal.fat,
+            "calories": 2000,
+            "protein": 100,
+            "carbs": 200,
+            "fat": 70
         }
-    return {"calories": 2000, "protein": 100, "carbs": 200, "fat": 70}  # default
+
+    finally:
+        db.close()
 
 @app.post("/goals/daily")
 def set_daily_goals(request: Request, data: dict = Body(...)):
     user_id = request.session.get("user_id")
+
     if not user_id:
-        return {"error": "Not authenticated"}, 401
+        raise HTTPException(status_code=401, detail="Not authenticated")
 
     db = SessionLocal()
-    goal = db.query(UserGoal).filter(UserGoal.user_id == str(user_id)).first()
 
-    if not goal:
-        goal = UserGoal(user_id=str(user_id))
-        db.add(goal)
+    try:
+        goal = db.query(UserGoal).filter(
+            UserGoal.user_id == str(user_id)
+        ).first()
 
-    goal.calories = data.get("calories", goal.calories)
-    goal.protein = data.get("protein", goal.protein)
-    goal.carbs = data.get("carbs", goal.carbs)
-    goal.fat = data.get("fat", goal.fat)
+        if not goal:
+            goal = UserGoal(user_id=str(user_id))
+            db.add(goal)
 
-    db.commit()
-    db.close()
+        goal.calories = data.get("calories", goal.calories)
+        goal.protein = data.get("protein", goal.protein)
+        goal.carbs = data.get("carbs", goal.carbs)
+        goal.fat = data.get("fat", goal.fat)
 
-    return {"status": "success", "goal": data}
+        db.commit()
+
+        return {
+            "status": "success",
+            "goal": {
+                "calories": goal.calories,
+                "protein": goal.protein,
+                "carbs": goal.carbs,
+                "fat": goal.fat,
+            }
+        }
+
+    finally:
+        db.close()
 
 @app.get("/achievements")
 def get_achievements(request: Request):
