@@ -40,6 +40,8 @@ class ManualFoodEntry(BaseModel):
 class UserGoal(Base):
     __tablename__ = "user_goals"
     id = Column(Integer, primary_key=True, index=True)
+    # Add this line below:
+    user_id = Column(String, unique=True, index=True) 
     calories = Column(Integer, default=2000)
     protein = Column(Integer, default=100)
     carbs = Column(Integer, default=200)

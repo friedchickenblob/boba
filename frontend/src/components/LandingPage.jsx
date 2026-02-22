@@ -6,9 +6,12 @@ import scanIcon from "../assets/scan.png";
 import adviceIcon from "../assets/advice.png";
 import searchIcon from "../assets/search.png";
 import goalsIcon from "../assets/target.png";
+import achievementsIcon from "../assets/badge.png";
+import aboutImg from "../assets/achive.jpg";
 
 export default function LandingPage() {
   const [user, setUser] = useState(null);
+  const [achievements, setAchievements] = useState(null);
 
   useEffect(() => {
     fetch("https://web-production-2a2a3.up.railway.app/auth/me", {
@@ -20,6 +23,23 @@ export default function LandingPage() {
       });
   }, []);
 
+  // Change your fetch to handle the data better
+  useEffect(() => {
+    fetch("http://localhost:8000/achievements", { credentials: "include" })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Achievement Data:", data);
+        setAchievements({
+          streak: data.streak || 0,
+          calorie_streak: data.calorie_streak || 0,
+          protein_days: data.protein_days || 0,
+          badges: data.badges || {}
+        });
+      })
+      .catch(err => console.error("Fetch error:", err));
+  }, []);
+
+
   return (
     <div className="landing-container">
       {/* Personalized Welcome Header */}
@@ -30,10 +50,35 @@ export default function LandingPage() {
           </h2>
         ) : (
           <h2 className="welcome-text">
-            Hey, <span className="welcome-username">Boba Enthusiast</span>!
+            Hey, <span className="welcome-username">Anonymous Boba Enthusiast</span>!
           </h2>
         )}
       </header>
+
+      {achievements && (
+        <div className="achievement-banner">
+          {/* Logging Streak - Always show if > 0 */}
+          {achievements.streak > 0 && (
+            <div className="badge fire">
+              🔥 {achievements.streak}-Day Streak
+            </div>
+          )}
+
+          {/* Calorie Streak - Show if they've hit it at least once */}
+          {achievements.calorie_streak > 0 && (
+            <div className="badge target">
+              🎯 {achievements.calorie_streak} Day Goal Hit
+            </div>
+          )}
+
+          {/* Protein Badge - Show if they've hit it at least once this week */}
+          {achievements.protein_days > 0 && (
+            <div className="badge protein">
+              🥇 {achievements.protein_days}/7 Protein Days
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -94,6 +139,7 @@ export default function LandingPage() {
           className="card-manual" 
         />
 
+
         <FeatureBlock 
           link="/goals" 
           icon={<img src={goalsIcon} alt="Set Goals" className="feature-icon" />} 
@@ -102,6 +148,77 @@ export default function LandingPage() {
           className="card-goals" 
         />
 
+        <FeatureBlock 
+          link="/achievements/full" 
+          icon={<img src={achievementsIcon} alt="Achievements" className="feature-icon" />} 
+          title="Achievements" 
+          desc="See your weekly achievements and streaks" 
+          className="card-achievements" 
+        />
+
+      </section>
+
+      <section className="about-section">
+        <div className="about-container">
+          
+          <div className="about-content">
+            <span className="about-tag">OUR MISSION</span>
+            <h2 className="about-title">Your Daily Partner in Nutrition and Wellness</h2>
+            <p className="about-description">
+              Our aim is to help students and health enthusiasts navigate their nutrition with comfort. 
+              We provide the tools you need to build better habits without the stress of manual calculations. 
+              With BobaScan AI, you can focus on enjoying your meals while we take care of the rest.
+            </p>
+
+            <div className="capability-list">
+              <div className="capability-item">
+                <div className="cap-icon">💪🏻</div>
+                <div className="cap-text">
+                  <h3>Quick Calorie Check</h3>
+                  <p>Instant identification of food calories using AI-powered image recognition.</p>
+                </div>
+              </div>
+
+              <div className="capability-item">
+                <div className="cap-icon">💪🏻</div>
+                <div className="cap-text">
+                  <h3>Smart Logging</h3>
+                  <p>Automatically log consumption into your calendar to track long-term goals.</p>
+                </div>
+              </div>
+
+              <div className="capability-item">
+                <div className="cap-icon">💪🏻</div>
+                <div className="cap-text">
+                  <h3>AI Nutrition Coach</h3>
+                  <p>Chat with our AI assistant for instant health tips and personalized meal advice.</p>
+                </div>
+              </div>
+
+              <div className="capability-item">
+                <div className="cap-icon">💪🏻</div>
+                <div className="cap-text">
+                  <h3>Motivation Streaks</h3>
+                  <p>Keep your momentum motivation with daily streaks and achievement tracking.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="disclaimer-box">
+              <p>
+                <strong>Note:</strong> We provide smart estimations to promote nutritional awareness. While not 100% absolute, it’s a powerful guide for a healthier you.
+              </p>
+            </div>
+          </div>
+
+          <div className="about-image-wrapper">
+            <img src={aboutImg} alt="Healthy lifestyle" className="about-main-img" />
+            <div className="floating-card">
+              <span>85% Better Focus</span>
+            </div>
+          </div>
+
+        </div>
       </section>
     </div>
   );

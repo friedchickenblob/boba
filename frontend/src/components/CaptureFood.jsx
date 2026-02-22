@@ -3,6 +3,7 @@ import Upload from "./Upload";
 import Results from "./Results";
 import AdviceBox from "./AdviceBox";
 import "../App.css";
+import mealIcon from "../assets/scan_food.jpg";
 
 function CaptureFood() {
   const [meals, setMeals] = useState([]);
@@ -37,17 +38,25 @@ function CaptureFood() {
     <div className="capture-container">
 
       <header className="capture-header">
-        <h1>Scan Your Meal</h1>
-        <p>Upload a photo and let our AI calculate the nutrition for you.</p>
+        <div className="header-text">
+          <h1>Scan Your Meal</h1>
+          <p>Upload or Snap a photo of your food and let our AI calculate the nutrition for you.</p>
+        </div>
+        
+        <div className="header-image-box">
+          <img src={mealIcon} alt="Meal Illustration" className="small-header-img" />
+          <div className="image-source">
+            Photo by <a href="https://www.istockphoto.com/portfolio/alvarez?mediatype=photography" target="_blank" rel="noreferrer">@alvarez</a> on 
+            <a href="https://www.istockphoto.com/photo/hands-of-cook-photographing-mexican-tacos-gm1241881284-362746031?searchscope=image%2Cfilm" target="_blank" rel="noreferrer"> Unsplash</a>
+          </div>
+        </div>
       </header>
 
       <div className="capture-layout">
-        {/* Left Side: The Action Area */}
         <div className="capture-card main-upload">
           <Upload onResult={handleAddMeal} />
         </div>
 
-        {/* Right Side: The Result Area */}
         {meals.length > 0 && (
           <div className="capture-sidebar">
             <div className="capture-card totals-card">

@@ -10,13 +10,14 @@ from app.models import Base, FoodLog, User, ManualFoodEntry, UserGoal
 from app.database import engine, SessionLocal
 from datetime import datetime, date,  timedelta
 from sqlalchemy import func
-from fastapi import Form, Body
+from fastapi import Form, Body, Request
 import os
 from openai import OpenAI
 
 from typing import Optional, Dict # for chatbot
 from app.auth.discord import router as discord_router
 from fastapi.responses import RedirectResponse
+import pytz
 
 
 from starlette.middleware.sessions import SessionMiddleware
@@ -224,23 +225,23 @@ def weekly_summary(request: Request):
 
 
 @app.get("/summary/weekly-breakdown")
-def weekly_breakdown():
+def weekly_breakdown(user_id: int = 1): 
     db = SessionLocal()
     today = date.today()
     week_start = today - timedelta(days=6)
 
-    # This query gets totals for each day individually
     results = db.query(
         func.date(FoodLog.timestamp).label("day"),
         func.sum(FoodLog.calories).label("calories")
     ).filter(
-        FoodLog.timestamp >= week_start
+        FoodLog.user_id == user_id, 
+        func.date(FoodLog.timestamp) >= week_start
     ).group_by(
         func.date(FoodLog.timestamp)
     ).all()
 
     db.close()
-    return [{"day": str(r.day), "calories": r.calories} for r in results]
+    return [{"day": str(r.day), "calories": r.calories or 0} for r in results]
 
 
 
@@ -264,34 +265,34 @@ def analyze_manual(entry: ManualFoodEntry):
         "nutrition": nutrition
     }
 
-@app.get("/summary/daily-log")
-def daily_log(request: Request): # Add request here
-    user_id = request.session.get("user_id")
-    if not user_id:
-        return [] # Return empty if not logged in
+# @app.get("/summary/daily-log")
+# def daily_log(request: Request): # Add request here
+#     user_id = request.session.get("user_id")
+#     if not user_id:
+#         return [] # Return empty if not logged in
 
-    db = SessionLocal()
-    today = date.today()
+#     db = SessionLocal()
+#     today = date.today()
     
-    # Filter by user_id so users only see their own food
-    logs = db.query(FoodLog).filter(
-        func.date(FoodLog.timestamp) == today,
-        FoodLog.user_id == str(user_id) 
-    ).order_by(FoodLog.timestamp.desc()).all()
+#     # Filter by user_id so users only see their own food
+#     logs = db.query(FoodLog).filter(
+#         func.date(FoodLog.timestamp) == today,
+#         FoodLog.user_id == str(user_id) 
+#     ).order_by(FoodLog.timestamp.desc()).all()
     
-    db.close()
+#     db.close()
     
-    return [
-        {
-            "id": log.id,
-            "food": log.food,
-            "calories": log.calories,
-            "protein": log.protein,
-            "fat": log.fat,
-            "carbs": log.carbs,
-            "time": log.timestamp.strftime("%H:%M")
-        } for log in logs
-    ]
+#     return [
+#         {
+#             "id": log.id,
+#             "food": log.food,
+#             "calories": log.calories,
+#             "protein": log.protein,
+#             "fat": log.fat,
+#             "carbs": log.carbs,
+#             "time": log.timestamp.strftime("%H:%M")
+#         } for log in logs
+#     ]
 
 @app.post("/log-manual")
 def log_manual(data: dict, request: Request): # Add request here
@@ -357,6 +358,34 @@ async def chat_endpoint(request: ChatRequest):
     except Exception as e:
         return {"reply": f"Sorry, something went wrong: {str(e)}"}
 
+# @app.get("/summary/daily-log")
+# def daily_log(request: Request):
+#     user_id = request.session.get("user_id")
+#     if not user_id:
+#         raise HTTPException(status_code=401, detail="Not authenticated")
+
+#     db = SessionLocal()
+#     today = date.today()
+    
+#     logs = db.query(FoodLog).filter(
+#         func.date(FoodLog.timestamp) == today,
+#         FoodLog.user_id == str(user_id)  # <-- only fetch current user's logs
+#     ).order_by(FoodLog.timestamp.desc()).all()
+    
+#     db.close()
+    
+#     return [
+#         {
+#             "id": log.id,
+#             "food": log.food,
+#             "calories": log.calories,
+#             "protein": log.protein,
+#             "fat": log.fat,
+#             "carbs": log.carbs,
+#             "time": log.timestamp.strftime("%H:%M")
+#         } for log in logs
+#     ]
+
 @app.get("/summary/daily-log")
 def daily_log(request: Request):
     user_id = request.session.get("user_id")
@@ -364,15 +393,19 @@ def daily_log(request: Request):
         raise HTTPException(status_code=401, detail="Not authenticated")
 
     db = SessionLocal()
-    today = date.today()
-    
+
+    today = datetime.utcnow().date()
+    start = datetime.combine(today, datetime.min.time())
+    end = start + timedelta(days=1)
+
     logs = db.query(FoodLog).filter(
-        func.date(FoodLog.timestamp) == today,
-        FoodLog.user_id == str(user_id)  # <-- only fetch current user's logs
+        FoodLog.timestamp >= start,
+        FoodLog.timestamp < end,
+        FoodLog.user_id == str(user_id)
     ).order_by(FoodLog.timestamp.desc()).all()
-    
+
     db.close()
-    
+
     return [
         {
             "id": log.id,
@@ -385,34 +418,208 @@ def daily_log(request: Request):
         } for log in logs
     ]
 
+
 @app.get("/goals/daily")
-def get_daily_goals():
-    db = SessionLocal()
-    goal = db.query(UserGoal).first()  # single user scenario
-    db.close()
-    if goal:
+def get_daily_goals(request: Request):
+    user_id = request.session.get("user_id")
+
+    # If not logged in → return defaults
+    if not user_id:
         return {
-            "calories": goal.calories,
-            "protein": goal.protein,
-            "carbs": goal.carbs,
-            "fat": goal.fat,
+            "calories": 2000,
+            "protein": 100,
+            "carbs": 200,
+            "fat": 70
         }
-    return {"calories": 2000, "protein": 100, "carbs": 200, "fat": 70}  # default
+
+    db = SessionLocal()
+    try:
+        goal = db.query(UserGoal).filter(
+            UserGoal.user_id == str(user_id)
+        ).first()
+
+        if goal:
+            return {
+                "calories": goal.calories,
+                "protein": goal.protein,
+                "carbs": goal.carbs,
+                "fat": goal.fat,
+            }
+
+        # No goal in DB → return defaults
+        return {
+            "calories": 2000,
+            "protein": 100,
+            "carbs": 200,
+            "fat": 70
+        }
+
+    finally:
+        db.close()
 
 @app.post("/goals/daily")
-def set_daily_goals(data: dict = Body(...)):
+def set_daily_goals(request: Request, data: dict = Body(...)):
+    user_id = request.session.get("user_id")
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     db = SessionLocal()
-    goal = db.query(UserGoal).first()
+
+    try:
+        goal = db.query(UserGoal).filter(
+            UserGoal.user_id == str(user_id)
+        ).first()
+
+        if not goal:
+            goal = UserGoal(user_id=str(user_id))
+            db.add(goal)
+
+        goal.calories = data.get("calories", goal.calories)
+        goal.protein = data.get("protein", goal.protein)
+        goal.carbs = data.get("carbs", goal.carbs)
+        goal.fat = data.get("fat", goal.fat)
+
+        db.commit()
+
+        return {
+            "status": "success",
+            "goal": {
+                "calories": goal.calories,
+                "protein": goal.protein,
+                "carbs": goal.carbs,
+                "fat": goal.fat,
+            }
+        }
+
+    finally:
+        db.close()
+
+@app.get("/achievements")
+def get_achievements(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return {"streak": 0, "calorie_streak": 0, "protein_days": 0, 
+                "badges": {"7_day_streak": False, "calorie_goal": False, "protein_goal": False}}
+
+    db = SessionLocal()
+    local_tz = pytz.timezone("America/Edmonton")
+    today = datetime.now(local_tz).date()
+
+    goal = db.query(UserGoal).filter(UserGoal.user_id == str(user_id)).first()
     if not goal:
-        goal = UserGoal()
+        goal = UserGoal(user_id=str(user_id), calories=2000, protein=100, carbs=200, fat=70)
         db.add(goal)
-    goal.calories = data.get("calories", goal.calories)
-    goal.protein = data.get("protein", goal.protein)
-    goal.carbs = data.get("carbs", goal.carbs)
-    goal.fat = data.get("fat", goal.fat)
-    db.commit()
+        db.commit()
+        db.refresh(goal)
+
+    logs = db.query(FoodLog.timestamp, FoodLog.calories, FoodLog.protein)\
+             .filter(FoodLog.user_id == str(user_id), FoodLog.timestamp >= today - timedelta(days=30))\
+             .all()
     db.close()
-    return {"status": "success", "goal": data}
 
+    log_dict = {}
+    for r in logs:
+        if r.timestamp.tzinfo:
+            local_day = r.timestamp.astimezone(local_tz).date()
+        else:
+            local_day = pytz.utc.localize(r.timestamp).astimezone(local_tz).date()
+        if local_day not in log_dict:
+            log_dict[local_day] = {"calories": 0, "protein": 0}
+        log_dict[local_day]["calories"] += r.calories or 0
+        log_dict[local_day]["protein"] += r.protein or 0
 
+    def calculate_resilient_streak(logs, start_date, goal_val=None, key=None):
+        curr = start_date if start_date in logs else (start_date - timedelta(days=1))
+        count = 0
+        while curr in logs:
+            if goal_val and logs[curr][key] < goal_val:
+                break
+            count += 1
+            curr -= timedelta(days=1)
+        return count
 
+    streak = calculate_resilient_streak(log_dict, today)
+    calorie_streak = calculate_resilient_streak(log_dict, today, goal.calories, "calories")
+    protein_days = sum(
+        1 for i in range(7)
+        if (today - timedelta(days=i)) in log_dict and log_dict[today - timedelta(days=i)]["protein"] >= goal.protein
+    )
+
+    # Compute badge flags
+    badges = {
+        "7_day_streak": streak >= 7,
+        "calorie_goal": calorie_streak >= 7,
+        "protein_goal": protein_days >= 7
+    }
+
+    return {
+        "streak": streak,
+        "calorie_streak": calorie_streak,
+        "protein_days": protein_days,
+        "badges": badges
+    }
+
+@app.get("/achievements/full")
+def achievements_full(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return {}
+
+    db = SessionLocal()
+    local_tz = pytz.timezone("America/Edmonton")
+    today = datetime.now(local_tz).date()
+    month_ago = today - timedelta(days=29)
+    week_start = today - timedelta(days=6)
+
+    # Fetch last 30 days logs
+    logs_30 = db.query(
+        FoodLog.timestamp,
+        FoodLog.calories,
+        FoodLog.protein,
+        FoodLog.fat,
+        FoodLog.carbs
+    ).filter(
+        FoodLog.user_id == str(user_id),
+        FoodLog.timestamp >= month_ago
+    ).all()
+    db.close()
+
+    # Build 30-day log dictionary
+    log_dict_30 = {}
+    for r in logs_30:
+        # Correct timezone handling
+        if r.timestamp.tzinfo:  # aware
+            local_day = r.timestamp.astimezone(local_tz).date()
+        else:  # naive, assume UTC
+            local_day = pytz.utc.localize(r.timestamp).astimezone(local_tz).date()
+
+        if local_day not in log_dict_30:
+            log_dict_30[local_day] = {"calories": 0, "protein": 0, "fat": 0, "carbs": 0}
+
+        log_dict_30[local_day]["calories"] += r.calories or 0
+        log_dict_30[local_day]["protein"] += r.protein or 0
+        log_dict_30[local_day]["fat"] += r.fat or 0
+        log_dict_30[local_day]["carbs"] += r.carbs or 0
+
+    # 30-day streak bar
+    streak_bar = [
+        {"day": (month_ago + timedelta(days=i)).strftime("%d"),
+         "logged": (month_ago + timedelta(days=i)) in log_dict_30}
+        for i in range(30)
+    ]
+
+    # Last 7-day history for charts
+    streak_history = []
+    for i in range(7):
+        d = week_start + timedelta(days=i)
+        day_log = log_dict_30.get(d, {"calories": 0, "protein": 0, "fat": 0, "carbs": 0})
+        streak_history.append({
+            "day": d.strftime("%a"),
+            "calories": day_log["calories"],
+            "protein": day_log["protein"],
+            "fat": day_log["fat"],
+            "carbs": day_log["carbs"]
+        })
+
+    return {"streak_bar": streak_bar, "streak_history": streak_history}

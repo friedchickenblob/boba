@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 
-// 1. DEFINE THE SUB-COMPONENT FIRST (or at the bottom)
 function MacroCard({ label, value, unit, className, icon }) {
   return (
     <div className={`macro-card ${className}`}>
@@ -48,6 +47,81 @@ function ProgressBar({ label, value, goal, unit, color }) {
   );
 }
 
+function WeeklyCalendar() {
+  const [weeklyData, setWeeklyData] = useState(null);
+  const [breakdown, setBreakdown] = useState([]); 
+  const [selectedDay, setSelectedDay] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const resTotal = await fetch("http://localhost:8000/summary/weekly", { credentials: "include" });
+      const dataTotal = await resTotal.json();
+      setWeeklyData(dataTotal.totals);
+
+      const resDots = await fetch("http://localhost:8000/summary/weekly-breakdown", { credentials: "include" });
+      const dataDots = await resDots.json();
+      console.log("BACKEND DATA:", dataDots); // Check if 'day' strings match your 'last7Days'
+      setBreakdown(dataDots);
+    };
+    fetchData();
+  }, []);
+
+  const last7Days = [...Array(7)].map((_, i) => {
+  const d = new Date();
+  d.setDate(d.getDate() - (6 - i));
+  
+  // This ensures we get YYYY-MM-DD in your LOCAL timezone
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+  });
+
+  return (
+    <div className="weekly-calendar-grid animate-fade">
+      <div className="weekly-total-card">
+        <h3>Total Weekly Consumption</h3>
+        {weeklyData ? (
+          <div className="weekly-stats-row">
+            <div className="week-stat"><strong>{weeklyData.calories}</strong><span>kcal</span></div>
+            <div className="week-stat"><strong>{weeklyData.protein}g</strong><span>Prot</span></div>
+            <div className="week-stat"><strong>{weeklyData.carbs}g</strong><span>Carb</span></div>
+            <div className="week-stat"><strong>{weeklyData.fat}g</strong><span>Fat</span></div>
+          </div>
+        ) : <p>Loading...</p>}
+      </div>
+      
+      <p className="hint-text">Daily breakdown (Click a day):</p>
+      <div className="calendar-row">
+        {last7Days.map((dateStr) => {
+          const dayData = breakdown.find(d => d.day === dateStr);
+          const hasData = dayData && dayData.calories > 0;
+          const dayLabel = new Date(dateStr).toLocaleDateString('en-US', { weekday: 'narrow' });
+
+          return (
+            <div 
+              key={dateStr} 
+              className={`calendar-day-card ${selectedDay === dateStr ? 'active' : ''}`}
+              onClick={() => setSelectedDay(dayData || { day: dateStr, calories: 0 })}
+            >
+              <span className="day-name">{dayLabel}</span>
+              <div className={`day-dot ${hasData ? 'green' : 'gray'}`}></div>
+            </div>
+          );
+        })}
+      </div>
+
+      {selectedDay && (
+        <div className="day-details-mini animate-slide-up">
+          <h4>{selectedDay.day}</h4>
+          <p>{selectedDay.calories > 0 ? `You consumed ${selectedDay.calories} kcal` : "No data for this day"}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [view, setView] = useState("daily"); 
@@ -75,10 +149,12 @@ export default function Dashboard() {
         const weeklyRes = await fetch("https://web-production-2a2a3.up.railway.app/summary/weekly", { credentials: "include" });
         const weeklyData = await weeklyRes.json();
         setWeeklyData(weeklyData.totals);
+
       } catch (err) {
         console.error("Dashboard Fetch Error:", err);
       }
     };
+
     fetchData();
   }, []);
 
@@ -114,15 +190,10 @@ export default function Dashboard() {
     <div className="loader-container">
       <div className="spinner"></div>
       <p>Loading your dashboard...</p>
+      <p>Try signing in?</p>
     </div>
   );
   
-  // if (!summary) return (
-  //   <div className="loader-container">
-  //     <div className="spinner"></div>
-  //     <p>Loading your dashboard...</p>
-  //   </div>
-  // );
 
   return (
     <div className="dashboard-wrapper">
@@ -266,30 +337,7 @@ export default function Dashboard() {
           </section>
         </div>
       ) : (
-        <div className="weekly-calendar-grid animate-fade">
-            <div className="weekly-total-card">
-                <h3>Total Weekly Consumption</h3>
-                {weeklyData ? (
-                  <div className="weekly-stats-row">
-                      <div className="week-stat"><strong>{weeklyData.calories}</strong><span>kcal</span></div>
-                      <div className="week-stat"><strong>{weeklyData.protein}g</strong><span>Prot</span></div>
-                      <div className="week-stat"><strong>{weeklyData.carbs}g</strong><span>Carb</span></div>
-                      <div className="week-stat"><strong>{weeklyData.fat}g</strong><span>Fat</span></div>
-                  </div>
-                ) : <p>Loading weekly data...</p>}
-            </div>
-            
-            <p className="hint-text">Daily breakdown for the week:</p>
-            <div className="calendar-row">
-                {['S','M','T','W','T','F','S'].map((day, i) => (
-                    <div key={i} className="calendar-day-card">
-                        <span className="day-name">{day}</span>
-                        <div className="day-dot"></div>
-                    </div>
-                ))}
-            </div>
-        </div>
-      )}
+      <WeeklyCalendar />)}
     </div>
   );
 }

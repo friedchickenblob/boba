@@ -50,7 +50,6 @@ body {
   background-color: #ffffff;
 }
 
-/* Navbar Styling */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -115,7 +114,49 @@ body {
 .login-btn:hover {
   background-color: #4d7c2e;
 }
+/* Media Query for Small Phones (768px and below) */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 20px; /* Reduce padding on sides */
+    flex-direction: column; /* Stack logo and links vertically */
+    gap: 15px;
+  }
 
+  .nav-logo {
+    font-size: 24px; /* Slightly smaller logo */
+  }
+
+  .nav-links {
+    gap: 15px; /* Tighter gap between links */
+    width: 100%;
+    justify-content: center; /* Center the links */
+    flex-wrap: wrap; /* Let links wrap to a second line if needed */
+  }
+
+  .nav-item {
+    font-size: 14px; /* Smaller text for mobile */
+  }
+
+  .login-btn {
+    padding: 8px 18px; /* Compact button */
+    font-size: 14px;
+    width: 100%; /* Make login button full width on tiny screens */
+    text-align: center;
+  }
+}
+
+/* Extra small screens (phones under 480px) */
+@media (max-width: 480px) {
+  .nav-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns of links */
+    text-align: center;
+  }
+  
+  .login-btn {
+    grid-column: span 2; /* Login button takes full width of the grid */
+  }
+}
 /* Hero Section Styling */
 .hero-section {
   display: flex;
@@ -167,6 +208,106 @@ body {
 
 .cta-button:hover {
   transform: scale(1.05);
+}
+/* Media Query for Tablets and Phones */
+@media (max-width: 968px) {
+  .hero-section {
+    flex-direction: column; /* Stack vertically */
+    text-align: center;      /* Center all text */
+    padding: 60px 24px;      /* Tighter padding */
+    gap: 40px;
+    min-height: auto;        /* Let content define height */
+  }
+
+  .hero-content {
+    flex: 1;
+    text-align: center;      /* Center text block */
+    order: 1;                /* Keep text at the top */
+  }
+
+  .hero-title {
+    font-size: 2.5rem;       /* Smaller font for mobile */
+    margin-bottom: 1rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-image-container {
+    order: 2;                /* Move image below the text */
+    width: 100%;
+    max-width: 400px;        /* Prevent image from getting too huge */
+  }
+
+  .hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;     /* Match the modern rounded look */
+  }
+
+  .cta-button {
+    width: 100%;             /* Full width button is easier to tap */
+    max-width: 300px;
+    padding: 14px 20px;
+  }
+}
+
+/* Extra Small Phones */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-section {
+    padding: 40px 16px;
+  }
+}
+
+/*=====achievment========*/
+.achievement-banner {
+  display: flex;
+  gap: 12px;
+  margin: 30px 0 25px 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 10px 16px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  animation: fadeIn 0.5s ease;
+}
+
+.badge.fire {
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  color: white;
+}
+
+.badge.target {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+}
+
+.badge.protein {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  color: white;
+}
+
+.streak-graph-card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+  margin: 20px 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .hero-image-container {
@@ -256,6 +397,7 @@ body {
 .card-advice  { background: linear-gradient(to right, #fce7a9, #fbf1d2); } /* Pastel Yellow */
 .card-manual  { background: linear-gradient(to right, #f3bae8, #fadef1); } /* Pastel Pink */
 .card-goals  { background: linear-gradient(to right, #f3fcde, #e7f4ba); } /* Pastel Pink */
+.card-achievements  { background: linear-gradient(to right, #e7d1f9, #f3bafc); } /* Pastel Pink */
 
 /* Dashboard Layout */
 .dashboard-wrapper {
@@ -406,24 +548,45 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Goals Page Layout */
-.goals-page {
-  max-width: 700px;
-  margin: 60px auto;
-  padding: 0 20px;
-}
 
 /* Card */
 .goals-card.modern {
-  background: rgb(234, 253, 219);
+  background: rgb(251, 251, 251);
   padding: 32px;
   border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  box-shadow: 10 30px 50px rgba(0,0,0,0.06);
   margin-top: 30px;
   transition: 0.3s;
 }
 
 /* Header */
+.goals-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.goals-header1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
+  margin-bottom: 40px;
+  padding: 25px 40px; 
+  background: linear-gradient(to right, #ddfbc0, #eefaee);
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.goals-header1 h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1f2937;
+}
+
 .goals-header {
   display: flex;
   justify-content: space-between;
@@ -581,19 +744,69 @@ body {
 }
 
 .capture-header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
   margin-bottom: 40px;
-  padding: 60px 20px; /* add some vertical space */
+  padding: 25px 40px; 
   background: linear-gradient(to right, #ddfbc0, #eefaee);
-  border-radius: 20px; /* optional, makes it look like a card */
-  width: 100%; /* stretches across container */
-  box-sizing: border-box; /* ensures padding doesn't break layout */
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header-text {
+  flex: 1; 
+  margin-left: 40px; 
+
 }
 
 .capture-header h1 {
   font-size: 2.5rem;
   font-weight: 800;
   color: #1f2937;
+  margin: 0 0 10px 0;
+}
+
+.capture-header p {
+  margin: 0;
+  color: #4b5563;
+  max-width: 500px;
+}
+
+.header-image-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.small-header-img {
+  width: 350px; 
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.img-attribution {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .capture-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .header-text p {
+    margin: 0 auto;
+  }
 }
 
 .capture-layout {
@@ -603,7 +816,7 @@ body {
   align-items: start;
 }
 
-/* If mobile, stack them */
+
 @media (max-width: 900px) {
   .capture-layout { grid-template-columns: 1fr; }
 }
@@ -614,7 +827,7 @@ body {
   border-radius: 25px;
   border: 1px solid #f3f4f6;
   box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-  
+  background-color: rgba(170, 233, 136, 0.7);
 }
 
 .main-upload {
@@ -623,10 +836,10 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 2px dashed #e5e7eb; /* Gives it that "upload zone" look */
+  border: 2px dashed #e5e7eb; 
 }
 
-/* Mini Stats on Sidebar */
+
 .totals-card h3 {
   margin-top: 0;
   font-size: 1.1rem;
@@ -679,7 +892,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f9fafb;
+  background-color: #eff3dd;
   margin-bottom: 25px;
   transition: border-color 0.3s;
   overflow: hidden;
@@ -694,6 +907,45 @@ body {
 }
 
 .upload-icon { font-size: 3rem; margin-bottom: 10px; }
+
+.clickable-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.clickable-zone:hover {
+  transform: translateY(-3px); 
+}
+
+.upload-asset-img {
+  width: 60px;  /* Adjust size as needed */
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+.upload-text {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #374151;
+  transition: all 0.3s ease;
+}
+
+.clickable-zone:hover .upload-text {
+  color: #22c55e; /* Bright Green */
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.4); /* Subtle green glow */
+}
+
+.divider {
+  font-weight: 1000;
+  color: #0a5a1959;
+  margin: 20px 0;
+}
 
 .image-preview {
   width: 100%;
@@ -772,13 +1024,18 @@ body {
 }
 
 .search-header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
   margin-bottom: 40px;
-  padding: 60px 30px; /* add some vertical space */
+  padding: 25px 40px; 
   background: linear-gradient(to right, #ddfbc0, #eefaee);
-  border-radius: 20px; /* optional, makes it look like a card */
-  width: 100%; /* stretches across container */
-  box-sizing: border-box; /* ensures padding doesn't break layout */
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .search-header h1 {
@@ -958,27 +1215,49 @@ body {
 .week-stat span { font-size: 0.8rem; color: #9ca3af; }
 
 .calendar-row {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
   margin-top: 15px;
 }
 
 .calendar-day-card {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  padding: 20px 10px;
-  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  transition: all 0.2s;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 12px;
+  transition: background 0.2s;
+  flex: 1;
 }
 
 .calendar-day-card:hover {
-  border-color: #16a34a;
-  background: #f0fdf4;
+  background: #f3f4f6;
+}
+
+.calendar-day-card.active {
+  background: #eff6ff;
+  border: 1px solid #3b82f6;
+}
+
+.day-dot.green {
+  background-color: #22c55e; /* Green for data */
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+
+.day-dot.gray {
+  background-color: #e5e7eb; /* Gray for empty */
+}
+
+/* Mini detail card */
+.day-details-mini {
+  margin-top: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 15px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
 }
 
 .day-name {
@@ -1036,12 +1315,6 @@ body {
   flex-direction: row;
   align-items: center;
   gap: 30px;
-}
-
-.divider {
-  font-weight: 800;
-  color: #9ca3af;
-  font-size: 0.8rem;
 }
 
 .camera-toggle-btn {
@@ -1342,8 +1615,18 @@ body {
 }
 
 .advice-header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
   margin-bottom: 40px;
+  padding: 25px 40px; 
+  background: linear-gradient(to right, #ddfbc0, #eefaee);
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .advice-header h1 {
@@ -1416,6 +1699,169 @@ body {
   border-left: 4px solid #3b82f6;
 }
 
+/*achievements*/
+.achieve-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.achieve-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
+  margin-bottom: 40px;
+  padding: 25px 40px; 
+  background: linear-gradient(to right, #ddfbc0, #eefaee);
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.achieve-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+/* Card Styling */
+.achieve-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.achieve-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Streak info row */
+.achieve-streak-info {
+  display: flex;
+  align-items: center;
+  margin: 8px 0 16px 0;
+}
+
+.achieve-fire-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.achieve-streak-text {
+  font-weight: 600;
+  color: #ff4d4d;
+  font-size: 14px;
+}
+
+/* Dots logic */
+.achieve-dots-container {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+
+.achieve-dot-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.achieve-day-label {
+  font-size: 11px;
+  color: #888;
+  font-weight: 500;
+}
+
+.achieve-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.achieve-dot.is-filled {
+  background-color: #ff4d4d;
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+}
+
+/* Chart Card */
+.achieve-chart-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+
+.achieve-chart-title {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #444;
+}
+
+/* Media Query for Achievements (Tablets and Phones) */
+@media (max-width: 768px) {
+  .achieve-container {
+    padding: 20px 15px;
+  }
+
+  .achieve-header {
+    flex-direction: column; /* Stack text and image vertically */
+    text-align: center;
+    padding: 30px 20px;
+    gap: 20px;
+  }
+
+  .achieve-header h1 {
+    font-size: 2rem; /* Scale down the title */
+  }
+
+  .achieve-header p {
+    font-size: 0.95rem;
+  }
+
+  /* Make dots easier to touch and see on mobile */
+  .achieve-dots-container {
+    gap: 5px; /* Ensure they don't touch */
+    overflow-x: auto; /* Allow side-scrolling if the screen is tiny */
+    padding-bottom: 5px;
+  }
+
+  .achieve-dot {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Extra Small Phones (Under 480px) */
+@media (max-width: 480px) {
+  .achieve-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .achieve-card, .achieve-chart-card {
+    padding: 15px; 
+  }
+
+  .achieve-day-label {
+    font-size: 10px;
+  }
+  .achieve-chart-card {
+    overflow-x: hidden;
+  }
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 900px) {
   .advice-layout {
@@ -1424,5 +1870,306 @@ body {
   
   .chat-context-card {
     order: 2; /* Put context below chat on mobile */
+  }
+}
+/* Tips Grid */
+.tips-section {
+  margin-top: 60px;
+  padding-bottom: 40px;
+}
+
+.tips-header {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.tip-card {
+  padding: 30px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(0,0,0,0.05); /* very subtle border */
+}
+
+.tip-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
+
+.tip-card h3 {
+  font-size: 1.25rem;
+  margin: 0 0 10px 0;
+  color: #111827;
+}
+
+.tip-card p {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.read-more {
+  margin-top: 20px;
+  font-weight: 700;
+  color: #3b82f6;
+  font-size: 0.85rem;
+}
+
+/* Modal Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-image-container {
+  width: 100%;
+  height: 250px;
+  margin: -50px -50px 30px -50px; /* Pulls image to the edges of the modal padding */
+  width: calc(100% + 100px);
+  overflow: hidden;
+  border-radius: 30px 30px 0 0;
+}
+.modal-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 600px;
+  padding: 50px;
+  border-radius: 30px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.close-modal {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: #f3f4f6;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-tag {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.modal-divider {
+  height: 5px;
+  width: 60px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+
+.modal-body h2 {
+  font-size: 2rem;
+  margin: 20px 0;
+  line-height: 1.2;
+}
+
+.modal-body p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #4b5563;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal-list {
+  list-style: none; /* Remove default bullets */
+  padding: 0;
+  margin: 0;
+}
+
+.modal-list li {
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 15px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+/* Custom Bullet Points */
+.modal-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #3b82f6; /* Use your accent color */
+  font-weight: bold;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.about-section {
+  padding: 100px 50px;
+  background-color: #ffffff;
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 80px;
+}
+
+.about-content {
+  flex: 1;
+}
+
+.about-tag {
+  color: #16a34a;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.about-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin: 15px 0 25px;
+  line-height: 1.2;
+}
+
+.about-description {
+  font-size: 1.15rem;
+  color: #6b7280;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+/* Capability List Items */
+.capability-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.capability-item {
+  display: flex;
+  gap: 15px;
+}
+
+.cap-icon {
+  font-size: 1rem;
+  background: #f0fdf4;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.cap-text h3 {
+  font-size: 1.1rem;
+  color: #111827;
+  margin-bottom: 5px;
+}
+
+.cap-text p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* Disclaimer Box */
+.disclaimer-box {
+  background-color: #f9fafb;
+  padding: 20px;
+  border-left: 4px solid #16a34a;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+/* Right Side Image */
+.about-image-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.about-main-img {
+  width: 100%;
+  border-radius: 30px;
+  box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+}
+
+.floating-card {
+  position: absolute;
+  bottom: 30px;
+  left: -20px;
+  background: white;
+  padding: 15px 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  font-weight: 700;
+  color: #16a34a;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 968px) {
+  .about-container {
+    flex-direction: column;
+    gap: 50px;
+  }
+  .capability-list {
+    grid-template-columns: 1fr;
+  }
+  .about-title {
+    font-size: 2.2rem;
+  }
+  .about-image-wrapper {
+    order: -1; /* Image appears first on mobile */
   }
 }

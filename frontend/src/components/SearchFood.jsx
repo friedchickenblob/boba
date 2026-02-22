@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../App.css";
+import mealIcon from "../assets/search1.png";
 
 function SearchFood() {
   const [food, setFood] = useState("");
@@ -58,10 +59,20 @@ function SearchFood() {
 
   return (
     <div className="search-container">
+
       <header className="search-header">
-        <h1>Search Food Calories</h1>
-        <p>Search for specific items and portion sizes to log your meals.</p>
-      </header>
+              <div className="header-text">
+                <h1>Search Food Calories</h1>
+                <p>Search for specific items and portion sizes to log your meals.</p>
+              </div>
+              
+              <div className="header-image-box">
+                <img src={mealIcon} alt="Meal Illustration" className="small-header-img" />
+                <div className="image-source">
+                  Photo by <a href="https://www.weightwatchers.com/au/blog/food/9-zeropoint-food-categories?srsltid=AfmBOooVZywEv5J7le45ffg7_6lBYEdC6k1AEwAs_Atqe1fTgfRAeUCi" target="_blank" rel="noreferrer">weightwatchers</a>
+                </div>  
+              </div>
+        </header>
 
       <div className="search-card">
         <div className="search-input-group">
