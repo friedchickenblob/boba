@@ -40,7 +40,7 @@ app.add_middleware(
 )
 
 origins = [
-    "https://boba-liard.vercel.app",  # your frontend URL
+    "https://calobroai.vercel.app",  # your frontend URL
 ]
 
 app.add_middleware(
