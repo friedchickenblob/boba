@@ -49,7 +49,7 @@ export default function LandingPage() {
           </h2>
         ) : (
           <h2 className="welcome-text">
-            Hey, <span className="welcome-username">Boba Enthusiast</span>!
+            Hey, <span className="welcome-username">Anonymous Boba Enthusiast</span>!
           </h2>
         )}
       </header>

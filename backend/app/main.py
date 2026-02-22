@@ -211,23 +211,23 @@ def weekly_summary(request: Request):
 
 
 @app.get("/summary/weekly-breakdown")
-def weekly_breakdown():
+def weekly_breakdown(user_id: int = 1): 
     db = SessionLocal()
     today = date.today()
     week_start = today - timedelta(days=6)
 
-    # This query gets totals for each day individually
     results = db.query(
         func.date(FoodLog.timestamp).label("day"),
         func.sum(FoodLog.calories).label("calories")
     ).filter(
-        FoodLog.timestamp >= week_start
+        FoodLog.user_id == user_id, 
+        func.date(FoodLog.timestamp) >= week_start
     ).group_by(
         func.date(FoodLog.timestamp)
     ).all()
 
     db.close()
-    return [{"day": str(r.day), "calories": r.calories} for r in results]
+    return [{"day": str(r.day), "calories": r.calories or 0} for r in results]
 
 
 

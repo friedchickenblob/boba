@@ -38,7 +38,7 @@ function CaptureFood() {
 
       <header className="capture-header">
         <h1>Scan Your Meal</h1>
-        <p>Upload a photo and let our AI calculate the nutrition for you.</p>
+        <p>Upload or Snap a photo of your food and let our AI calculate the nutrition for you.</p>
       </header>
 
       <div className="capture-layout">
