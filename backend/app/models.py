@@ -18,7 +18,7 @@ class FoodLog(Base):
     fat = Column(Float)
     carbs = Column(Float)
 
-    user_id = Column(BigInteger, ForeignKey("users.id"))
+    user_id = Column(BigInteger, ForeignKey("users.discord_id"))
     user = relationship("User", back_populates="food_logs")
 
 
@@ -26,7 +26,7 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    discord_id = Column(String, unique=True, index=True)
+    discord_id = Column(BigInteger, unique=True, index=True)
     username = Column(String)
     email = Column(String, unique=True)
     verified = Column(Boolean, default=False)
