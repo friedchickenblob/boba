@@ -18,7 +18,7 @@ class FoodLog(Base):
     fat = Column(Float)
     carbs = Column(Float)
 
-    user_id = Column(BigInteger, ForeignKey("users.id"))
+    user_id = Column(String, ForeignKey("users.discord_id"))
     user = relationship("User", back_populates="food_logs")
 
 
