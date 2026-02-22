@@ -60,7 +60,7 @@ Instead of obsessing over numbers, users can focus on building sustainable habit
 
 Note: Our AI provides smart estimations to promote nutritional awareness. While not 100% absolute, it’s a powerful guide toward healthier eating.
 
-To try it out, please use **Chrome** and remember to **log in**
+To try it out, please use **Chrome**, and remember to **log in using your Discord account**.
 
 ## Demo Video
 link here
