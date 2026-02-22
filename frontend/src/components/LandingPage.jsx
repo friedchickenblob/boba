@@ -33,6 +33,8 @@ export default function LandingPage() {
           streak: data.streak || 0,
           calorie_streak: data.calorie_streak || 0,
           protein_days: data.protein_days || 0,
+          calorie_days_hit: data.calorie_days_hit || 0,
+          protein_days_hit: data.protein_days_hit || 0,
           badges: data.badges || {}
         });
       })
@@ -64,18 +66,12 @@ export default function LandingPage() {
             </div>
           )}
 
-          {/* Calorie Streak - Show if they've hit it at least once */}
-          {achievements.calorie_streak > 0 && (
-            <div className="badge target">
-              🎯 {achievements.calorie_streak} Day Goal Hit
-            </div>
+          {achievements.calorie_days_hit>0 && (
+            <div className="badge target">🎯 {achievements.calorie_days_hit}-Day Calorie Goal</div>
           )}
 
-          {/* Protein Badge - Show if they've hit it at least once this week */}
-          {achievements.protein_days > 0 && (
-            <div className="badge protein">
-              🥇 {achievements.protein_days}/7 Protein Days
-            </div>
+          {achievements.protein_days_hit>0 && (
+            <div className="badge protein">🥇 {achievements.protein_days_hit}-Day Protein Goal</div>
           )}
         </div>
       )}
