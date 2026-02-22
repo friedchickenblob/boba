@@ -2133,15 +2133,17 @@ body {
 }
 
 .about-main-img {
-  width: 100%;
+  width: 70%;
   border-radius: 30px;
   box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+  left: 40px;
+  position: relative;
 }
 
 .floating-card {
   position: absolute;
-  bottom: 30px;
-  left: -20px;
+  bottom: 10px;
+  left: 0px;
   background: white;
   padding: 15px 25px;
   border-radius: 15px;
