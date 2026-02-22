@@ -7,7 +7,7 @@ import adviceIcon from "../assets/advice.png";
 import searchIcon from "../assets/search.png";
 import goalsIcon from "../assets/target.png";
 import achievementsIcon from "../assets/badge.png";
-import aboutImg from "../assets/boba-img.png";
+import aboutImg from "../assets/calobro.png";
 import bobaImg from "../assets/boba.png";
 
 export default function LandingPage() {
@@ -43,11 +43,10 @@ export default function LandingPage() {
 
   return (
     <div className="landing-container">
-      {/* Personalized Welcome Header */}
       <header className="user-welcome-header">
         {user ? (
           <h2 className="welcome-text">
-            Hey, <span className="welcome-username">{user.username}</span>!
+            Hey, <span className="welcome-username">{ user.username }</span>   !
           </h2>
         ) : (
           <h2 className="welcome-text">
@@ -58,7 +57,6 @@ export default function LandingPage() {
 
       {achievements && (
         <div className="achievement-banner">
-          {/* Logging Streak - Always show if > 0 */}
           {achievements.streak > 0 && (
             <div className="badge fire">
               🔥 {achievements.streak}-Day Streak
@@ -68,7 +66,7 @@ export default function LandingPage() {
           {/* Calorie Streak - Show if they've hit it at least once */}
           {achievements.calorie_streak > 0 && (
             <div className="badge target">
-              🎯 {achievements.calorie_streak} Day Goal Hit
+              🎯 {achievements.calorie_streak}-Day Calorie Goal Hit
             </div>
           )}
 
@@ -214,9 +212,6 @@ export default function LandingPage() {
 
           <div className="about-image-wrapper">
             <img src={aboutImg} alt="Healthy lifestyle" className="about-main-img" />
-            <div className="floating-card">
-              <span>85% Better Focus</span>
-            </div>
           </div>
 
         </div>

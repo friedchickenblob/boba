@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../App.css";
+import logoIcon from "../assets/calobro-icon.png";
 
 const login = () => {
   window.location.href = "http://localhost:8000/auth/discord/login";
@@ -35,7 +36,8 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <Link to="/" className="nav-logo">
-        BobaScan <span style={{ color: "#66a33d" }}>AI</span>
+        <img src={logoIcon} alt="CaloBro Logo" className="nav-icon" />
+        <span>Calo<span style={{ color: "#66a33d" }}>Bro</span></span>
       </Link>
 
       <div className="nav-links">
