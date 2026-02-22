@@ -251,34 +251,34 @@ def analyze_manual(entry: ManualFoodEntry):
         "nutrition": nutrition
     }
 
-@app.get("/summary/daily-log")
-def daily_log(request: Request): # Add request here
-    user_id = request.session.get("user_id")
-    if not user_id:
-        return [] # Return empty if not logged in
+# @app.get("/summary/daily-log")
+# def daily_log(request: Request): # Add request here
+#     user_id = request.session.get("user_id")
+#     if not user_id:
+#         return [] # Return empty if not logged in
 
-    db = SessionLocal()
-    today = date.today()
+#     db = SessionLocal()
+#     today = date.today()
     
-    # Filter by user_id so users only see their own food
-    logs = db.query(FoodLog).filter(
-        func.date(FoodLog.timestamp) == today,
-        FoodLog.user_id == str(user_id) 
-    ).order_by(FoodLog.timestamp.desc()).all()
+#     # Filter by user_id so users only see their own food
+#     logs = db.query(FoodLog).filter(
+#         func.date(FoodLog.timestamp) == today,
+#         FoodLog.user_id == str(user_id) 
+#     ).order_by(FoodLog.timestamp.desc()).all()
     
-    db.close()
+#     db.close()
     
-    return [
-        {
-            "id": log.id,
-            "food": log.food,
-            "calories": log.calories,
-            "protein": log.protein,
-            "fat": log.fat,
-            "carbs": log.carbs,
-            "time": log.timestamp.strftime("%H:%M")
-        } for log in logs
-    ]
+#     return [
+#         {
+#             "id": log.id,
+#             "food": log.food,
+#             "calories": log.calories,
+#             "protein": log.protein,
+#             "fat": log.fat,
+#             "carbs": log.carbs,
+#             "time": log.timestamp.strftime("%H:%M")
+#         } for log in logs
+#     ]
 
 @app.post("/log-manual")
 def log_manual(data: dict, request: Request): # Add request here
@@ -344,6 +344,34 @@ async def chat_endpoint(request: ChatRequest):
     except Exception as e:
         return {"reply": f"Sorry, something went wrong: {str(e)}"}
 
+# @app.get("/summary/daily-log")
+# def daily_log(request: Request):
+#     user_id = request.session.get("user_id")
+#     if not user_id:
+#         raise HTTPException(status_code=401, detail="Not authenticated")
+
+#     db = SessionLocal()
+#     today = date.today()
+    
+#     logs = db.query(FoodLog).filter(
+#         func.date(FoodLog.timestamp) == today,
+#         FoodLog.user_id == str(user_id)  # <-- only fetch current user's logs
+#     ).order_by(FoodLog.timestamp.desc()).all()
+    
+#     db.close()
+    
+#     return [
+#         {
+#             "id": log.id,
+#             "food": log.food,
+#             "calories": log.calories,
+#             "protein": log.protein,
+#             "fat": log.fat,
+#             "carbs": log.carbs,
+#             "time": log.timestamp.strftime("%H:%M")
+#         } for log in logs
+#     ]
+
 @app.get("/summary/daily-log")
 def daily_log(request: Request):
     user_id = request.session.get("user_id")
@@ -351,15 +379,19 @@ def daily_log(request: Request):
         raise HTTPException(status_code=401, detail="Not authenticated")
 
     db = SessionLocal()
-    today = date.today()
-    
+
+    today = datetime.utcnow().date()
+    start = datetime.combine(today, datetime.min.time())
+    end = start + timedelta(days=1)
+
     logs = db.query(FoodLog).filter(
-        func.date(FoodLog.timestamp) == today,
-        FoodLog.user_id == str(user_id)  # <-- only fetch current user's logs
+        FoodLog.timestamp >= start,
+        FoodLog.timestamp < end,
+        FoodLog.user_id == str(user_id)
     ).order_by(FoodLog.timestamp.desc()).all()
-    
+
     db.close()
-    
+
     return [
         {
             "id": log.id,
@@ -371,6 +403,7 @@ def daily_log(request: Request):
             "time": log.timestamp.strftime("%H:%M")
         } for log in logs
     ]
+
 
 @app.get("/goals/daily")
 def get_daily_goals(request: Request):

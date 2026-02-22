@@ -201,6 +201,7 @@ export default function Dashboard() {
     <div className="loader-container">
       <div className="spinner"></div>
       <p>Loading your dashboard...</p>
+      <p>Try signing in?</p>
     </div>
   );
   

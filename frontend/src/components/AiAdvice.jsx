@@ -61,6 +61,7 @@ export default function AiAdvice() {
       <div className="loader-container">
         <div className="spinner"></div>
         <p>Analyzing your nutrition profile...</p>
+        <p>Try signing in?</p>
       </div>
     );
   }
