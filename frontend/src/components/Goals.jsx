@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import "../App.css";
+import mealIcon from "../assets/goal.jpg";
 
 function GoalsCard({ goals, setGoals, summary }) {
   const [localGoals, setLocalGoals] = useState(goals || {
@@ -82,8 +84,8 @@ function GoalsCard({ goals, setGoals, summary }) {
   return (
     <div className="goals-card modern">
       <div className="goals-header">
-        <h3>Daily Goals</h3>
-        {saved && <span className="saved-badge">✓ Saved</span>}
+            <h3>Daily Goals</h3>
+            {saved && <span className="saved-badge">✓ Saved</span>}
       </div>
 
       {/* Presets */}
@@ -145,8 +147,16 @@ export default function Goals() {
   return (
     <div className="goals-container">
       <header className="goals-header1">
-        <h1>Set Goals</h1>
-        <p>Set your Daily Goals</p>
+        <div className="header-text">
+              <h1>Set Goals</h1>
+              <p>Set your Daily Goals</p>
+        </div>    
+        <div className="header-image-box">
+                      <img src={mealIcon} alt="Meal Illustration" className="small-header-img" />
+                  <div className="image-source">
+                    Photo by <a href="https://www.auraleisure.ie/blog/what-are-the-benefits-of-meal-planning/" target="_blank" rel="noreferrer">aura leisure</a>
+                  </div>  
+      </div>
       </header>
       <GoalsCard goals={goals} setGoals={setGoals} />
     </div>

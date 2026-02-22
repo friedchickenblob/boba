@@ -50,7 +50,6 @@ body {
   background-color: #ffffff;
 }
 
-/* Navbar Styling */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -115,7 +114,49 @@ body {
 .login-btn:hover {
   background-color: #4d7c2e;
 }
+/* Media Query for Small Phones (768px and below) */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 20px; /* Reduce padding on sides */
+    flex-direction: column; /* Stack logo and links vertically */
+    gap: 15px;
+  }
 
+  .nav-logo {
+    font-size: 24px; /* Slightly smaller logo */
+  }
+
+  .nav-links {
+    gap: 15px; /* Tighter gap between links */
+    width: 100%;
+    justify-content: center; /* Center the links */
+    flex-wrap: wrap; /* Let links wrap to a second line if needed */
+  }
+
+  .nav-item {
+    font-size: 14px; /* Smaller text for mobile */
+  }
+
+  .login-btn {
+    padding: 8px 18px; /* Compact button */
+    font-size: 14px;
+    width: 100%; /* Make login button full width on tiny screens */
+    text-align: center;
+  }
+}
+
+/* Extra small screens (phones under 480px) */
+@media (max-width: 480px) {
+  .nav-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns of links */
+    text-align: center;
+  }
+  
+  .login-btn {
+    grid-column: span 2; /* Login button takes full width of the grid */
+  }
+}
 /* Hero Section Styling */
 .hero-section {
   display: flex;
@@ -167,6 +208,61 @@ body {
 
 .cta-button:hover {
   transform: scale(1.05);
+}
+/* Media Query for Tablets and Phones */
+@media (max-width: 968px) {
+  .hero-section {
+    flex-direction: column; /* Stack vertically */
+    text-align: center;      /* Center all text */
+    padding: 60px 24px;      /* Tighter padding */
+    gap: 40px;
+    min-height: auto;        /* Let content define height */
+  }
+
+  .hero-content {
+    flex: 1;
+    text-align: center;      /* Center text block */
+    order: 1;                /* Keep text at the top */
+  }
+
+  .hero-title {
+    font-size: 2.5rem;       /* Smaller font for mobile */
+    margin-bottom: 1rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-image-container {
+    order: 2;                /* Move image below the text */
+    width: 100%;
+    max-width: 400px;        /* Prevent image from getting too huge */
+  }
+
+  .hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;     /* Match the modern rounded look */
+  }
+
+  .cta-button {
+    width: 100%;             /* Full width button is easier to tap */
+    max-width: 300px;
+    padding: 14px 20px;
+  }
+}
+
+/* Extra Small Phones */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-section {
+    padding: 40px 16px;
+  }
 }
 
 /*=====achievment========*/
@@ -471,13 +567,18 @@ body {
 }
 
 .goals-header1 {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
   margin-bottom: 40px;
-  padding: 60px 20px; /* add some vertical space */
+  padding: 25px 40px; 
   background: linear-gradient(to right, #ddfbc0, #eefaee);
-  border-radius: 20px; /* optional, makes it look like a card */
-  width: 100%; /* stretches across container */
-  box-sizing: border-box; /* ensures padding doesn't break layout */
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .goals-header1 h1 {
@@ -643,19 +744,69 @@ body {
 }
 
 .capture-header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
   margin-bottom: 40px;
-  padding: 60px 20px; /* add some vertical space */
+  padding: 25px 40px; 
   background: linear-gradient(to right, #ddfbc0, #eefaee);
-  border-radius: 20px; /* optional, makes it look like a card */
-  width: 100%; /* stretches across container */
-  box-sizing: border-box; /* ensures padding doesn't break layout */
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header-text {
+  flex: 1; 
+  margin-left: 40px; 
+
 }
 
 .capture-header h1 {
   font-size: 2.5rem;
   font-weight: 800;
   color: #1f2937;
+  margin: 0 0 10px 0;
+}
+
+.capture-header p {
+  margin: 0;
+  color: #4b5563;
+  max-width: 500px;
+}
+
+.header-image-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.small-header-img {
+  width: 350px; 
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.img-attribution {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .capture-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .header-text p {
+    margin: 0 auto;
+  }
 }
 
 .capture-layout {
@@ -873,13 +1024,18 @@ body {
 }
 
 .search-header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
   margin-bottom: 40px;
-  padding: 60px 30px; /* add some vertical space */
+  padding: 25px 40px; 
   background: linear-gradient(to right, #ddfbc0, #eefaee);
-  border-radius: 20px; /* optional, makes it look like a card */
-  width: 100%; /* stretches across container */
-  box-sizing: border-box; /* ensures padding doesn't break layout */
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .search-header h1 {
@@ -1459,13 +1615,18 @@ body {
 }
 
 .advice-header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
   margin-bottom: 40px;
-  padding: 60px 30px; /* add some vertical space */
+  padding: 25px 40px; 
   background: linear-gradient(to right, #ddfbc0, #eefaee);
-  border-radius: 20px; /* optional, makes it look like a card */
-  width: 100%; /* stretches across container */
-  box-sizing: border-box; /* ensures padding doesn't break layout */
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .advice-header h1 {
@@ -1539,7 +1700,6 @@ body {
 }
 
 /*achievements*/
-/* Container and Typography */
 .achieve-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -1547,13 +1707,18 @@ body {
 }
 
 .achieve-header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes text left, image right */
+  gap: 30px;
+  text-align: left; /* Changes text alignment from center to left */
+  
   margin-bottom: 40px;
-  padding: 60px 20px; /* add some vertical space */
+  padding: 25px 40px; 
   background: linear-gradient(to right, #ddfbc0, #eefaee);
-  border-radius: 20px; /* optional, makes it look like a card */
-  width: 100%; /* stretches across container */
-  box-sizing: border-box; /* ensures padding doesn't break layout */
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .achieve-header h1 {
@@ -1643,6 +1808,58 @@ body {
   margin-bottom: 15px;
   font-size: 16px;
   color: #444;
+}
+
+/* Media Query for Achievements (Tablets and Phones) */
+@media (max-width: 768px) {
+  .achieve-container {
+    padding: 20px 15px;
+  }
+
+  .achieve-header {
+    flex-direction: column; /* Stack text and image vertically */
+    text-align: center;
+    padding: 30px 20px;
+    gap: 20px;
+  }
+
+  .achieve-header h1 {
+    font-size: 2rem; /* Scale down the title */
+  }
+
+  .achieve-header p {
+    font-size: 0.95rem;
+  }
+
+  /* Make dots easier to touch and see on mobile */
+  .achieve-dots-container {
+    gap: 5px; /* Ensure they don't touch */
+    overflow-x: auto; /* Allow side-scrolling if the screen is tiny */
+    padding-bottom: 5px;
+  }
+
+  .achieve-dot {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Extra Small Phones (Under 480px) */
+@media (max-width: 480px) {
+  .achieve-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .achieve-card, .achieve-chart-card {
+    padding: 15px; 
+  }
+
+  .achieve-day-label {
+    font-size: 10px;
+  }
+  .achieve-chart-card {
+    overflow-x: hidden;
+  }
 }
 
 /* Mobile Responsiveness */
@@ -1822,4 +2039,137 @@ body {
   font-weight: bold;
   font-size: 1.5rem;
   line-height: 1;
+}
+.about-section {
+  padding: 100px 50px;
+  background-color: #ffffff;
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 80px;
+}
+
+.about-content {
+  flex: 1;
+}
+
+.about-tag {
+  color: #16a34a;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.about-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin: 15px 0 25px;
+  line-height: 1.2;
+}
+
+.about-description {
+  font-size: 1.15rem;
+  color: #6b7280;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+/* Capability List Items */
+.capability-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.capability-item {
+  display: flex;
+  gap: 15px;
+}
+
+.cap-icon {
+  font-size: 1rem;
+  background: #f0fdf4;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.cap-text h3 {
+  font-size: 1.1rem;
+  color: #111827;
+  margin-bottom: 5px;
+}
+
+.cap-text p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* Disclaimer Box */
+.disclaimer-box {
+  background-color: #f9fafb;
+  padding: 20px;
+  border-left: 4px solid #16a34a;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+/* Right Side Image */
+.about-image-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.about-main-img {
+  width: 100%;
+  border-radius: 30px;
+  box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+}
+
+.floating-card {
+  position: absolute;
+  bottom: 30px;
+  left: -20px;
+  background: white;
+  padding: 15px 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  font-weight: 700;
+  color: #16a34a;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 968px) {
+  .about-container {
+    flex-direction: column;
+    gap: 50px;
+  }
+  .capability-list {
+    grid-template-columns: 1fr;
+  }
+  .about-title {
+    font-size: 2.2rem;
+  }
+  .about-image-wrapper {
+    order: -1; /* Image appears first on mobile */
+  }
 }
