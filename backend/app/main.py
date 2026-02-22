@@ -47,9 +47,12 @@ app.add_middleware(
 
 app.include_router(discord_router)
 
+# @app.get("/")
+# async def root():
+#     return RedirectResponse(url="/docs")
 @app.get("/")
 async def root():
-    return RedirectResponse(url="/docs")
+    return {"greeting": "Hello, World!", "message": "Welcome to FastAPI!"}
 
 @app.get("/auth/me")
 def get_current_user(request: Request):
