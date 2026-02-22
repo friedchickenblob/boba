@@ -7,7 +7,8 @@ import adviceIcon from "../assets/advice.png";
 import searchIcon from "../assets/search.png";
 import goalsIcon from "../assets/target.png";
 import achievementsIcon from "../assets/badge.png";
-import aboutImg from "../assets/achive.jpg";
+import aboutImg from "../assets/boba-img.png";
+import bobaImg from "../assets/boba.png";
 
 export default function LandingPage() {
   const [user, setUser] = useState(null);
@@ -172,7 +173,7 @@ export default function LandingPage() {
 
             <div className="capability-list">
               <div className="capability-item">
-                <div className="cap-icon">💪🏻</div>
+                <div className="cap-icon"><img src={bobaImg} alt="Boba Icon" className="cap-icon" /></div>
                 <div className="cap-text">
                   <h3>Quick Calorie Check</h3>
                   <p>Instant identification of food calories using AI-powered image recognition.</p>
@@ -180,7 +181,7 @@ export default function LandingPage() {
               </div>
 
               <div className="capability-item">
-                <div className="cap-icon">💪🏻</div>
+                <div className="cap-icon"><img src={bobaImg} alt="Boba Icon" className="cap-icon" /></div>
                 <div className="cap-text">
                   <h3>Smart Logging</h3>
                   <p>Automatically log consumption into your calendar to track long-term goals.</p>
@@ -188,7 +189,7 @@ export default function LandingPage() {
               </div>
 
               <div className="capability-item">
-                <div className="cap-icon">💪🏻</div>
+                <div className="cap-icon"><img src={bobaImg} alt="Boba Icon" className="cap-icon" /></div>
                 <div className="cap-text">
                   <h3>AI Nutrition Coach</h3>
                   <p>Chat with our AI assistant for instant health tips and personalized meal advice.</p>
@@ -196,7 +197,7 @@ export default function LandingPage() {
               </div>
 
               <div className="capability-item">
-                <div className="cap-icon">💪🏻</div>
+                <div className="cap-icon"><img src={bobaImg} alt="Boba Icon" className="cap-icon" /></div>
                 <div className="cap-text">
                   <h3>Motivation Streaks</h3>
                   <p>Keep your momentum motivation with daily streaks and achievement tracking.</p>
