@@ -2,7 +2,7 @@
 
 # CaloBro – Your Daily Partner in Nutrition and Wellness
 
-**Live Site:** put site link here bro
+**Live Site:** https://calobroski.vercel.app/
 
 ## Our Mission
 **CaloBro** empowers students and health enthusiasts to navigate nutrition with ease. Our goal is to help you build healthier habits without the stress of manual calculations. Focus on enjoying your meals and we’ll handle the rest.
@@ -59,6 +59,8 @@ Instead of obsessing over numbers, users can focus on building sustainable habit
 6. **Achievements**: Unlock streaks and see your weekly nutrition trends.
 
 Note: Our AI provides smart estimations to promote nutritional awareness. While not 100% absolute, it’s a powerful guide toward healthier eating.
+
+To try it out, please use **Chrome** and remember to **log in**
 
 ## Demo Video
 link here
