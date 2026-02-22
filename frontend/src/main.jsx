@@ -11,6 +11,7 @@ import './index.css';
 
 import Goals from "./components/Goals";
 import './index.css'
+import AchievementsPage from "./components/AchievementsPage";
 
 function AppWrapper() {
   return (
@@ -22,7 +23,12 @@ function AppWrapper() {
         <Route path="/capture" element={<CaptureFood />} />
         <Route path="/manual" element={<SearchFood />} />
         <Route path="/goals" element={<Goals />} />
-        <Route path="/advice" element={<AiAdvice />} />
+        <Route path="/achievements/full" element={<AchievementsPage />} />
+        <Route path="/advice" element={
+          <div className="p-20 text-center text-2xl font-bold">
+            AI Nutrition Advice Coming Soon...
+          </div>
+        } />
       </Routes>
     </div>
   );

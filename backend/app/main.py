@@ -10,7 +10,7 @@ from app.models import Base, FoodLog, User, ManualFoodEntry, UserGoal
 from app.database import engine, SessionLocal
 from datetime import datetime, date,  timedelta
 from sqlalchemy import func
-from fastapi import Form, Body
+from fastapi import Form, Body, Request
 import os
 from openai import OpenAI
 
@@ -373,10 +373,15 @@ def daily_log(request: Request):
     ]
 
 @app.get("/goals/daily")
-def get_daily_goals():
+def get_daily_goals(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return {"calories": 2000, "protein": 100, "carbs": 200, "fat": 70}
+
     db = SessionLocal()
-    goal = db.query(UserGoal).first()  # single user scenario
+    goal = db.query(UserGoal).filter(UserGoal.user_id == str(user_id)).first()
     db.close()
+
     if goal:
         return {
             "calories": goal.calories,
@@ -387,19 +392,155 @@ def get_daily_goals():
     return {"calories": 2000, "protein": 100, "carbs": 200, "fat": 70}  # default
 
 @app.post("/goals/daily")
-def set_daily_goals(data: dict = Body(...)):
+def set_daily_goals(request: Request, data: dict = Body(...)):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return {"error": "Not authenticated"}, 401
+
     db = SessionLocal()
-    goal = db.query(UserGoal).first()
+    goal = db.query(UserGoal).filter(UserGoal.user_id == str(user_id)).first()
+
     if not goal:
-        goal = UserGoal()
+        goal = UserGoal(user_id=str(user_id))
         db.add(goal)
+
     goal.calories = data.get("calories", goal.calories)
     goal.protein = data.get("protein", goal.protein)
     goal.carbs = data.get("carbs", goal.carbs)
     goal.fat = data.get("fat", goal.fat)
+
     db.commit()
     db.close()
+
     return {"status": "success", "goal": data}
 
+@app.get("/achievements")
+def get_achievements(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return {"streak": 0, "calorie_streak": 0, "protein_days": 0}
 
+    db = SessionLocal()
+    today = date.today()
+    yesterday = today - timedelta(days=1)
 
+    # 1. Get Goals
+    goal = db.query(UserGoal).filter(UserGoal.user_id == str(user_id)).first()
+    if not goal:
+        goal = UserGoal(user_id=str(user_id), calories=2000, protein=100, carbs=200, fat=70)
+        db.add(goal)
+        db.commit()
+
+    # 2. Fetch logs
+    logs = db.query(
+        func.date(FoodLog.timestamp).label("day"),
+        func.sum(FoodLog.calories).label("calories"),
+        func.sum(FoodLog.protein).label("protein")
+    ).filter(
+        FoodLog.user_id == str(user_id),
+        FoodLog.timestamp >= today - timedelta(days=30)
+    ).group_by(func.date(FoodLog.timestamp)).all()
+    db.close()
+
+    log_dict = {
+        (datetime.strptime(r.day, "%Y-%m-%d").date() if isinstance(r.day, str) else r.day): {
+            "calories": r.calories or 0,
+            "protein": r.protein or 0
+        } for r in logs
+    }
+
+    # --- Helper Function for Resilient Streaks ---
+    def calculate_resilient_streak(logs, start_date, goal_val=None, key=None):
+        # If no log today, start checking from yesterday to keep the badge visible
+        curr = start_date if start_date in logs else (start_date - timedelta(days=1))
+        
+        count = 0
+        while curr in logs:
+            if goal_val and logs[curr][key] < goal_val:
+                break
+            count += 1
+            curr -= timedelta(days=1)
+        return count
+
+    # 3. Calculate Streaks
+    # Basic logging streak
+    streak = calculate_resilient_streak(log_dict, today)
+    
+    # Calorie streak (must hit goal)
+    calorie_streak = calculate_resilient_streak(log_dict, today, goal.calories, "calories")
+
+    # Protein days (Fixed: Total days in last 7 days meeting goal)
+    protein_days = 0
+    for i in range(7):
+        d = today - timedelta(days=i)
+        if d in log_dict and log_dict[d]["protein"] >= goal.protein:
+            protein_days += 1
+
+    return {
+        "streak": streak,
+        "calorie_streak": calorie_streak,
+        "protein_days": protein_days
+    }
+
+@app.get("/achievements/full")
+def achievements_full(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return {}
+
+    db = SessionLocal()
+    today = date.today()
+    month_ago = today - timedelta(days=29)
+    week_start = today - timedelta(days=6)
+
+    # Fetch last 30 days
+    logs_30 = db.query(
+        func.date(FoodLog.timestamp).label("day"),
+        func.sum(FoodLog.calories).label("calories"),
+        func.sum(FoodLog.protein).label("protein"),
+        func.sum(FoodLog.fat).label("fat"),
+        func.sum(FoodLog.carbs).label("carbs"),
+    ).filter(
+        FoodLog.user_id == str(user_id),
+        FoodLog.timestamp >= month_ago
+    ).group_by(func.date(FoodLog.timestamp)).all()
+
+    # 30-day log dictionary
+    log_dict_30 = {
+        datetime.strptime(r.day, "%Y-%m-%d").date() if isinstance(r.day, str) else r.day: {
+            "calories": r.calories or 0,
+            "protein": r.protein or 0,
+            "fat": r.fat or 0,
+            "carbs": r.carbs or 0,
+        }
+        for r in logs_30
+    }
+
+    # 30-day streak bar
+    streak_bar = []
+    for i in range(30):
+        d = month_ago + timedelta(days=i)
+        streak_bar.append({
+            "day": d.strftime("%d"),  # just the day number
+            "logged": d in log_dict_30
+        })
+
+    # Inside @app.get("/achievements/full")
+    streak_history = []
+    for i in range(7):
+        d = week_start + timedelta(days=i)
+        day_log = log_dict_30.get(d)
+        streak_history.append({
+            "day": d.strftime("%a"),
+            "calories": day_log["calories"] if day_log else 0,
+            "protein": day_log["protein"] if day_log else 0,
+            "fat": day_log["fat"] if day_log else 0,    # ADD THIS
+            "carbs": day_log["carbs"] if day_log else 0 # ADD THIS
+        })
+
+    db.close()
+
+    return {
+        "streak_bar": streak_bar,
+        "streak_history": streak_history
+    }

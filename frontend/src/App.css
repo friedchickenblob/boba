@@ -169,6 +169,51 @@ body {
   transform: scale(1.05);
 }
 
+/*=====achievment========*/
+.achievement-banner {
+  display: flex;
+  gap: 12px;
+  margin: 30px 0 25px 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 10px 16px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  animation: fadeIn 0.5s ease;
+}
+
+.badge.fire {
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  color: white;
+}
+
+.badge.target {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+}
+
+.badge.protein {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  color: white;
+}
+
+.streak-graph-card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+  margin: 20px 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .hero-image-container {
   flex: 0 1 500px;   /* limit image container */
   display: flex;
@@ -256,6 +301,7 @@ body {
 .card-advice  { background: linear-gradient(to right, #fce7a9, #fbf1d2); } /* Pastel Yellow */
 .card-manual  { background: linear-gradient(to right, #f3bae8, #fadef1); } /* Pastel Pink */
 .card-goals  { background: linear-gradient(to right, #f3fcde, #e7f4ba); } /* Pastel Pink */
+.card-achievements  { background: linear-gradient(to right, #e7d1f9, #f3bafc); } /* Pastel Pink */
 
 /* Dashboard Layout */
 .dashboard-wrapper {
@@ -406,24 +452,40 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Goals Page Layout */
-.goals-page {
-  max-width: 700px;
-  margin: 60px auto;
-  padding: 0 20px;
-}
 
 /* Card */
 .goals-card.modern {
-  background: rgb(234, 253, 219);
+  background: rgb(251, 251, 251);
   padding: 32px;
   border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  box-shadow: 10 30px 50px rgba(0,0,0,0.06);
   margin-top: 30px;
   transition: 0.3s;
 }
 
 /* Header */
+.goals-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.goals-header1 {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 60px 20px; /* add some vertical space */
+  background: linear-gradient(to right, #ddfbc0, #eefaee);
+  border-radius: 20px; /* optional, makes it look like a card */
+  width: 100%; /* stretches across container */
+  box-sizing: border-box; /* ensures padding doesn't break layout */
+}
+
+.goals-header1 h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1f2937;
+}
+
 .goals-header {
   display: flex;
   justify-content: space-between;
@@ -1414,6 +1476,113 @@ body {
   font-size: 0.85rem;
   line-height: 1.5;
   border-left: 4px solid #3b82f6;
+}
+
+/*achievements*/
+/* Container and Typography */
+.achieve-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.achieve-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 60px 20px; /* add some vertical space */
+  background: linear-gradient(to right, #ddfbc0, #eefaee);
+  border-radius: 20px; /* optional, makes it look like a card */
+  width: 100%; /* stretches across container */
+  box-sizing: border-box; /* ensures padding doesn't break layout */
+}
+
+.achieve-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+/* Card Styling */
+.achieve-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.achieve-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Streak info row */
+.achieve-streak-info {
+  display: flex;
+  align-items: center;
+  margin: 8px 0 16px 0;
+}
+
+.achieve-fire-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.achieve-streak-text {
+  font-weight: 600;
+  color: #ff4d4d;
+  font-size: 14px;
+}
+
+/* Dots logic */
+.achieve-dots-container {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+
+.achieve-dot-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.achieve-day-label {
+  font-size: 11px;
+  color: #888;
+  font-weight: 500;
+}
+
+.achieve-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.achieve-dot.is-filled {
+  background-color: #ff4d4d;
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+}
+
+/* Chart Card */
+.achieve-chart-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+
+.achieve-chart-title {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #444;
 }
 
 /* Mobile Responsiveness */

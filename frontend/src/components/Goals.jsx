@@ -140,8 +140,11 @@ export default function Goals() {
   }, []);
 
   return (
-    <div className="goals-page">
-      <h1>Set Your Goals</h1>
+    <div className="goals-container">
+      <header className="goals-header1">
+        <h1>Set Goals</h1>
+        <p>Set your Daily Goals</p>
+      </header>
       <GoalsCard goals={goals} setGoals={setGoals} />
     </div>
   );
