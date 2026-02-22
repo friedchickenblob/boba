@@ -19,9 +19,15 @@ export default function AchievementsPage() {
   const [data, setData] = useState({ streak_bar: [], streak_history: [] });
 
   useEffect(() => {
-    fetch("http://localhost:8000/achievements/full", { credentials: "include" })
-      .then(res => res.json())
-      .then(setData);
+    const fetchData = async () => {
+      const res = await fetch("http://localhost:8000/achievements/full", {
+        credentials: "include"
+      });
+      const data = await res.json();
+      setData(data);
+    };
+
+    fetchData();
   }, []);
 
   // 1. Get dynamic labels from the backend history (e.g., ["Tue", "Wed", "Thu"...])
