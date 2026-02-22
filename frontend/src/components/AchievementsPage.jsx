@@ -35,9 +35,16 @@ export default function AchievementsPage() {
 
   // 2. Map the data for the dots
   // For logging, we slice the last 7 of the 30-day bar to align with the labels
+  // Map the last 7 days based on whether the goal was actually MET
   const last7Logging = data.streak_bar.slice(-7).map(d => d.logged);
-  const last7Calories = data.streak_history.map(d => d.calories > 0);
-  const last7Protein = data.streak_history.map(d => d.protein > 0);
+
+  const last7Calories = data.streak_history.map(d => 
+    d.calories >= data.goals.calories
+  );
+
+  const last7Protein = data.streak_history.map(d => 
+    d.protein >= data.goals.protein
+  );
 
   const macroChartData = {
     labels: dynamicLabels,
