@@ -28,11 +28,12 @@ export default function LandingPage() {
     fetch("http://localhost:8000/achievements", { credentials: "include" })
       .then(res => res.json())
       .then(data => {
-        console.log("Achievement Data:", data); // DEBUG: Check your console!
+        console.log("Achievement Data:", data);
         setAchievements({
           streak: data.streak || 0,
           calorie_streak: data.calorie_streak || 0,
-          protein_days: data.protein_days || 0
+          protein_days: data.protein_days || 0,
+          badges: data.badges || {}
         });
       })
       .catch(err => console.error("Fetch error:", err));

@@ -17,6 +17,7 @@ from openai import OpenAI
 from typing import Optional, Dict # for chatbot
 from app.auth.discord import router as discord_router
 from fastapi.responses import RedirectResponse
+import pytz
 
 
 from starlette.middleware.sessions import SessionMiddleware
@@ -452,42 +453,37 @@ def set_daily_goals(request: Request, data: dict = Body(...)):
 def get_achievements(request: Request):
     user_id = request.session.get("user_id")
     if not user_id:
-        return {"streak": 0, "calorie_streak": 0, "protein_days": 0}
+        return {"streak": 0, "calorie_streak": 0, "protein_days": 0, 
+                "badges": {"7_day_streak": False, "calorie_goal": False, "protein_goal": False}}
 
     db = SessionLocal()
-    today = date.today()
-    yesterday = today - timedelta(days=1)
+    local_tz = pytz.timezone("America/Edmonton")
+    today = datetime.now(local_tz).date()
 
-    # 1. Get Goals
     goal = db.query(UserGoal).filter(UserGoal.user_id == str(user_id)).first()
     if not goal:
         goal = UserGoal(user_id=str(user_id), calories=2000, protein=100, carbs=200, fat=70)
         db.add(goal)
         db.commit()
 
-    # 2. Fetch logs
-    logs = db.query(
-        func.date(FoodLog.timestamp).label("day"),
-        func.sum(FoodLog.calories).label("calories"),
-        func.sum(FoodLog.protein).label("protein")
-    ).filter(
-        FoodLog.user_id == str(user_id),
-        FoodLog.timestamp >= today - timedelta(days=30)
-    ).group_by(func.date(FoodLog.timestamp)).all()
+    logs = db.query(FoodLog.timestamp, FoodLog.calories, FoodLog.protein)\
+             .filter(FoodLog.user_id == str(user_id), FoodLog.timestamp >= today - timedelta(days=30))\
+             .all()
     db.close()
 
-    log_dict = {
-        (datetime.strptime(r.day, "%Y-%m-%d").date() if isinstance(r.day, str) else r.day): {
-            "calories": r.calories or 0,
-            "protein": r.protein or 0
-        } for r in logs
-    }
+    log_dict = {}
+    for r in logs:
+        if r.timestamp.tzinfo:
+            local_day = r.timestamp.astimezone(local_tz).date()
+        else:
+            local_day = pytz.utc.localize(r.timestamp).astimezone(local_tz).date()
+        if local_day not in log_dict:
+            log_dict[local_day] = {"calories": 0, "protein": 0}
+        log_dict[local_day]["calories"] += r.calories or 0
+        log_dict[local_day]["protein"] += r.protein or 0
 
-    # --- Helper Function for Resilient Streaks ---
     def calculate_resilient_streak(logs, start_date, goal_val=None, key=None):
-        # If no log today, start checking from yesterday to keep the badge visible
         curr = start_date if start_date in logs else (start_date - timedelta(days=1))
-        
         count = 0
         while curr in logs:
             if goal_val and logs[curr][key] < goal_val:
@@ -496,24 +492,25 @@ def get_achievements(request: Request):
             curr -= timedelta(days=1)
         return count
 
-    # 3. Calculate Streaks
-    # Basic logging streak
     streak = calculate_resilient_streak(log_dict, today)
-    
-    # Calorie streak (must hit goal)
     calorie_streak = calculate_resilient_streak(log_dict, today, goal.calories, "calories")
+    protein_days = sum(
+        1 for i in range(7)
+        if (today - timedelta(days=i)) in log_dict and log_dict[today - timedelta(days=i)]["protein"] >= goal.protein
+    )
 
-    # Protein days (Fixed: Total days in last 7 days meeting goal)
-    protein_days = 0
-    for i in range(7):
-        d = today - timedelta(days=i)
-        if d in log_dict and log_dict[d]["protein"] >= goal.protein:
-            protein_days += 1
+    # Compute badge flags
+    badges = {
+        "7_day_streak": streak >= 7,
+        "calorie_goal": calorie_streak >= 7,
+        "protein_goal": protein_days >= 7
+    }
 
     return {
         "streak": streak,
         "calorie_streak": calorie_streak,
-        "protein_days": protein_days
+        "protein_days": protein_days,
+        "badges": badges
     }
 
 @app.get("/achievements/full")
@@ -523,58 +520,59 @@ def achievements_full(request: Request):
         return {}
 
     db = SessionLocal()
-    today = date.today()
+    local_tz = pytz.timezone("America/Edmonton")
+    today = datetime.now(local_tz).date()
     month_ago = today - timedelta(days=29)
     week_start = today - timedelta(days=6)
 
-    # Fetch last 30 days
+    # Fetch last 30 days logs
     logs_30 = db.query(
-        func.date(FoodLog.timestamp).label("day"),
-        func.sum(FoodLog.calories).label("calories"),
-        func.sum(FoodLog.protein).label("protein"),
-        func.sum(FoodLog.fat).label("fat"),
-        func.sum(FoodLog.carbs).label("carbs"),
+        FoodLog.timestamp,
+        FoodLog.calories,
+        FoodLog.protein,
+        FoodLog.fat,
+        FoodLog.carbs
     ).filter(
         FoodLog.user_id == str(user_id),
         FoodLog.timestamp >= month_ago
-    ).group_by(func.date(FoodLog.timestamp)).all()
+    ).all()
+    db.close()
 
-    # 30-day log dictionary
-    log_dict_30 = {
-        datetime.strptime(r.day, "%Y-%m-%d").date() if isinstance(r.day, str) else r.day: {
-            "calories": r.calories or 0,
-            "protein": r.protein or 0,
-            "fat": r.fat or 0,
-            "carbs": r.carbs or 0,
-        }
-        for r in logs_30
-    }
+    # Build 30-day log dictionary
+    log_dict_30 = {}
+    for r in logs_30:
+        # Correct timezone handling
+        if r.timestamp.tzinfo:  # aware
+            local_day = r.timestamp.astimezone(local_tz).date()
+        else:  # naive, assume UTC
+            local_day = pytz.utc.localize(r.timestamp).astimezone(local_tz).date()
+
+        if local_day not in log_dict_30:
+            log_dict_30[local_day] = {"calories": 0, "protein": 0, "fat": 0, "carbs": 0}
+
+        log_dict_30[local_day]["calories"] += r.calories or 0
+        log_dict_30[local_day]["protein"] += r.protein or 0
+        log_dict_30[local_day]["fat"] += r.fat or 0
+        log_dict_30[local_day]["carbs"] += r.carbs or 0
 
     # 30-day streak bar
-    streak_bar = []
-    for i in range(30):
-        d = month_ago + timedelta(days=i)
-        streak_bar.append({
-            "day": d.strftime("%d"),  # just the day number
-            "logged": d in log_dict_30
-        })
+    streak_bar = [
+        {"day": (month_ago + timedelta(days=i)).strftime("%d"),
+         "logged": (month_ago + timedelta(days=i)) in log_dict_30}
+        for i in range(30)
+    ]
 
-    # Inside @app.get("/achievements/full")
+    # Last 7-day history for charts
     streak_history = []
     for i in range(7):
         d = week_start + timedelta(days=i)
-        day_log = log_dict_30.get(d)
+        day_log = log_dict_30.get(d, {"calories": 0, "protein": 0, "fat": 0, "carbs": 0})
         streak_history.append({
             "day": d.strftime("%a"),
-            "calories": day_log["calories"] if day_log else 0,
-            "protein": day_log["protein"] if day_log else 0,
-            "fat": day_log["fat"] if day_log else 0,    # ADD THIS
-            "carbs": day_log["carbs"] if day_log else 0 # ADD THIS
+            "calories": day_log["calories"],
+            "protein": day_log["protein"],
+            "fat": day_log["fat"],
+            "carbs": day_log["carbs"]
         })
 
-    db.close()
-
-    return {
-        "streak_bar": streak_bar,
-        "streak_history": streak_history
-    }
+    return {"streak_bar": streak_bar, "streak_history": streak_history}
